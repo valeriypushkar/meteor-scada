@@ -1,1 +1,3 @@
-# meteor-scada
+# MeteorScada
+
+Meteor package for building SCADA systems

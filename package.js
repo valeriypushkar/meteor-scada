@@ -15,6 +15,7 @@ Package.onUse(function(api) {
   api.use('mongo@1.4.4');
   api.use('tracker@1.1.3');
   api.use('static-html@1.2.2');
+  api.use('tmeasday:check-npm-versions@0.3.2');
 
   // JS
   api.use('ecmascript@0.10.5');

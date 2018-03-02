@@ -43,6 +43,7 @@ Package.onUse(function(api) {
   // Images
   api.addAssets([
     'resources/images/favicon.ico',
+    'resources/images/logo.png'
   ], 'client');
 
   // JS code

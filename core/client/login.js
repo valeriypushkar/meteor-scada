@@ -3,9 +3,12 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { withRouter } from 'react-router-dom'
 
-import Grid from 'material-ui/Grid'
-import Paper from 'material-ui/Paper'
+import Dialog, { DialogContent, DialogTitle,
+  withMobileDialog } from 'material-ui/Dialog'
+import Button from 'material-ui/Button'
 import TextField from 'material-ui/TextField'
+import Typography from 'material-ui/Typography'
+import Fade from 'material-ui/transitions/Fade'
 import { withStyles } from 'material-ui/styles'
 
 import { IMG_LOGO } from '../../resources/catalog'
@@ -18,20 +21,28 @@ import { IMG_LOGO } from '../../resources/catalog'
  * @private
  */
 class LoginPage extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {name: ""};
+  state = {
+    username: '',
+    password: '',
+    failed: false
+  }
+
+  handleChange = name => event => {
+    this.setState({
+      [name]: event.target.value,
+      failed: false
+    });
   }
 
   handleLogin = (event) => {
     event.preventDefault();
 
-    //const username = $("#username").val();
-    //const password = $("#password").val();
+    const username = this.state.username;
+    const password = this.state.password;
 
     Meteor.loginWithPassword(username, password, (error) => {
       if (error) {
-        alert(error.reason, 'warning');
+        this.setState({ failed: true });
       } else {
         this.props.history.replace('/');
       }
@@ -39,59 +50,74 @@ class LoginPage extends Component {
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, fullScreen } = this.props;
 
     return (
-      <Grid container justify='center'>
-        <Grid item xs={11} sm={7} md={5} lg={4} xl={3}>
-          <Paper>
-            <form noValidate autoComplete="off">
-              <Grid container justify='center'>
-                <Grid item xs={8}>
-                  <img
-                    className={classes.logo}
-                    alt="Meteor SCADA"
-                    src={IMG_LOGO}
-                  />
-                </Grid>
-                <Grid item xs={8}>
-                  <TextField
-                    id='username'
-                    type='text'
-                    label='Username'
-                    margin='normal'
-                    fullWidth
-                  />
-                </Grid>
-                <Grid item xs={8}>
-                  <TextField
-                    id='password'
-                    type='password'
-                    label='Password'
-                    margin='normal'
-                    fullWidth
-                  />
-                </Grid>
-              </Grid>
-            </form>
-          </Paper>
-        </Grid>
-      </Grid>
+      <Dialog open={true} fullScreen={fullScreen} aria-labelledby="dlg-title">
+        <DialogTitle id="dlg-title">
+          <img className={classes.logoImg} alt="Login" src={IMG_LOGO}/>
+        </DialogTitle>
+        <DialogContent>
+          <form noValidate onSubmit={this.handleLogin}>
+            <TextField
+              id='username' type='text' label='Username'
+              margin='normal' fullWidth
+              autoFocus autoComplete='on'
+              inputProps={{
+                autoCapitalize: 'none',
+                autoCorrect: 'off',
+                spellCheck: 'false'}}
+              error={this.state.failed}
+              value={this.state.username}
+              onChange={this.handleChange('username')}
+            />
+            <TextField
+              id='password' type='password' label='Password'
+              margin='normal' fullWidth
+              autoComplete='current-password'
+              error={this.state.failed}
+              value={this.state.password}
+              onChange={this.handleChange('password')}
+            />
+            <Fade in={this.state.failed}>
+              <Typography className={classes.errorMsg} variant="subheading">
+                Incorrect username or password.
+              </Typography>
+            </Fade>
+            <Button
+              type='submit' className={classes.loginBtn}
+              variant="raised" color="primary" size="large" fullWidth
+            >
+              LOGIN
+            </Button>
+          </form>
+        </DialogContent>
+      </Dialog>
     );
   }
 }
 
+
 LoginPage.propTypes = {
   history: PropTypes.object.isRequired,
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
+  fullScreen: PropTypes.bool.isRequired,
 };
 
 const styles = theme => ({
-   logo: {
+   logoImg: {
      display: 'block',
      marginLeft: 'auto',
-     marginRight: 'auto'
+     marginRight: 'auto',
+   },
+   loginBtn: {
+     marginTop: '5%',
+   },
+   errorMsg: {
+     marginTop: '5%',
+     textAlign: 'center',
+     color: theme.palette.error.main
    }
  });
 
-export default withRouter(withStyles(styles)(LoginPage));
+export default withRouter(withMobileDialog()(withStyles(styles)(LoginPage)));

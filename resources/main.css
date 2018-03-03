@@ -1,0 +1,17 @@
+/*
+ MeteorScada doesn't need CSS as far as JSS is used.
+ But one CSS file is still required to apply global CSS hacks.
+*/
+
+/* Removing input background colour for webkit autocomplete */
+@-webkit-keyframes autofill {
+    to {
+        color: #fff;
+        background: transparent;
+    }
+}
+
+input:-webkit-autofill {
+    -webkit-animation-name: autofill;
+    -webkit-animation-fill-mode: both;
+}

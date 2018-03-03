@@ -33,12 +33,11 @@ Package.onUse(function(api) {
   api.use('alanning:roles@1.2.16');
 
   // CSS
-  api.use('fourseven:scss@4.5.4');
-  api.imply('fourseven:scss@4.5.4');
   api.imply('seba:minifiers-autoprefixer@1.0.1');
 
-  // Html
+  // Html and CSS files
   api.addFiles('resources/main.html', 'client');
+  api.addFiles('resources/main.css', 'client');
 
   // Images
   api.addAssets([

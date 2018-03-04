@@ -40,6 +40,11 @@ class LoginPage extends Component {
     const username = this.state.username;
     const password = this.state.password;
 
+    if (!username || !password) {
+      this.setState({ failed: true });
+      return;
+    }
+
     Meteor.loginWithPassword(username, password, (error) => {
       if (error) {
         this.setState({ failed: true });
@@ -105,19 +110,19 @@ LoginPage.propTypes = {
 };
 
 const styles = theme => ({
-   logoImg: {
-     display: 'block',
-     marginLeft: 'auto',
-     marginRight: 'auto',
-   },
-   loginBtn: {
-     marginTop: '5%',
-   },
-   errorMsg: {
-     marginTop: '5%',
-     textAlign: 'center',
-     color: theme.palette.error.main
-   }
- });
+  logoImg: {
+    display: 'block',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+  },
+  loginBtn: {
+    marginTop: '5%',
+  },
+  errorMsg: {
+    marginTop: '5%',
+    textAlign: 'center',
+    color: theme.palette.error.main
+  }
+});
 
 export default withRouter(withMobileDialog()(withStyles(styles)(LoginPage)));

@@ -1,2 +1,2 @@
 
-import './navigation/navigation.test'
+import './navigation/store.test'

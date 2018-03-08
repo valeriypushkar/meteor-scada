@@ -1,4 +1,4 @@
-import MeteorScada from '../common/namespace'
+import MeteorScada from '../core/common/namespace'
 
 /**
  * @file Navigation configuration store.
@@ -20,11 +20,8 @@ var lastId = 1;
  */
 export function publishNavigation(nav) {
   if (navigation === nav) {
-    console.warn("Something wrong is here");
     return; // Avoid endless loop though it should not happen
   }
-
-  console.log("Publishing nav: " + JSON.stringify(nav));
 
   // Update configuration and notify all subscribers
   navigation = nav;

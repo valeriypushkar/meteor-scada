@@ -22,7 +22,6 @@ Package.onUse(function(api) {
   api.imply('ecmascript@0.10.5');
   api.use('es5-shim@4.7.3');
   api.imply('es5-shim@4.7.3');
-  api.use('standard-minifier-js@2.3.2');
   api.imply('standard-minifier-js@2.3.2');
 
   // Data management
@@ -52,4 +51,10 @@ Package.onUse(function(api) {
 });
 
 Package.onTest(function(api) {
+  // Do not use meteor-scada itself.
+  // It's more an application than a package so needs to be tested similary.
+  api.use('ecmascript@0.10.5');
+  api.use('meteortesting:mocha');
+  api.mainModule('meteor-scada-client.test.js', 'client');
+  api.mainModule('meteor-scada-server.test.js', 'server');
 });

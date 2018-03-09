@@ -18,9 +18,7 @@ describe('navigation.store', function() {
 
   it('update subscriber on subscribe', function() {
     publishNavigation(data1);
-    const id = subscribeNavigation(function(data) {
-      current = data;
-    });
+    const id = subscribeNavigation(data => { current = data });
 
     expect(current).to.equal(data1);
 
@@ -28,9 +26,7 @@ describe('navigation.store', function() {
   });
 
   it('update subscriber on publish', function() {
-    const id = subscribeNavigation(function(data) {
-      current = data;
-    });
+    const id = subscribeNavigation(data => { current = data });
 
     expect(current).to.not.equal(data1);
     publishNavigation(data1);
@@ -44,9 +40,7 @@ describe('navigation.store', function() {
   });
 
   it('ingore unsubscribed / double unsubscribe', function() {
-    const id = subscribeNavigation(function(data) {
-      current = data;
-    });
+    const id = subscribeNavigation(data => { current = data });
 
     publishNavigation(data1);
     expect(current).to.equal(data1);
@@ -58,7 +52,7 @@ describe('navigation.store', function() {
     unsubscribeNavigation(id);
   });
 
-  it('double callback / avoid endless loop', function() {
+  it('no double callback / avoid endless loop', function() {
     publishNavigation(data1);
 
     const id = subscribeNavigation(function(data) {
@@ -72,22 +66,16 @@ describe('navigation.store', function() {
     unsubscribeNavigation(id);
   });
 
-  it('multiple subscribers', function() {
+  it('multiple subscribers support', function() {
     let current1 = current;
     let current2 = current;
     let current3 = current;
 
     publishNavigation(data1);
 
-    const id1 = subscribeNavigation(function(data) {
-      current1 = data;
-    });
-    const id2 = subscribeNavigation(function(data) {
-      current2 = data;
-    });
-    const id3 = subscribeNavigation(function(data) {
-      current3 = data;
-    });
+    const id1 = subscribeNavigation(data => { current1 = data });
+    const id2 = subscribeNavigation(data => { current2 = data });
+    const id3 = subscribeNavigation(data => { current3 = data });
 
     expect(current1).to.equal(data1);
     expect(current2).to.equal(data1);

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
-import MeteorScada from '../common/namespace'
+import MeteorScada from '../core/common/namespace'
 import NavMenuItem from './menuitem'
 import { publishNavigation } from './store'
 
@@ -10,26 +10,26 @@ import { publishNavigation } from './store'
  * @public
  */
 export default class NavigationProvider extends Component {
-  componentWillMount  = this.initialize
-  componentDidMount   = this.publish
-  componentWillUpdate = this.initialize
-  componentDidUpdate  = this.publish
+  componentWillMount  = this._initialize
+  componentDidMount   = this._publish
+  componentWillUpdate = this._initialize
+  componentDidUpdate  = this._publish
 
-  initialize() {
+  _initialize() {
     this.data = {};
   }
 
-  publish() {
+  _publish() {
     publishNavigation(this.data);
   }
 
-  addItem = (name, item) => {
+  _addItem = (name, item) => {
     this.data[name] = item;
   }
 
   render() {
     const childrenWithProps = React.Children.map(this.props.children, child =>
-      React.cloneElement(child, { addItem: this.addItem }));
+      React.cloneElement(child, { addItem: this._addItem }));
 
     return (
       <React.Fragment>

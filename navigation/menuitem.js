@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
-import MeteorScada from '../common/namespace'
+import MeteorScada from '../core/common/namespace'
 
 /**
  * Scada top menu item.

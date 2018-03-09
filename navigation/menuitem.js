@@ -8,12 +8,12 @@ import MeteorScada from '../core/common/namespace'
  * @public
  */
 export default class NavMenuItem extends Component {
-  componentWillMount = this.initialize
-  componentDidMount = this.publish
-  componentWillUpdate = this.initialize
-  componentDidUpdate = this.publish
+  componentWillMount = this._initialize
+  componentDidMount = this._publish
+  componentWillUpdate = this._initialize
+  componentDidUpdate = this._publish
 
-  initialize() {
+  _initialize() {
     this.data = { children: {} };
     this.data.type = "NavMenuItem";
     this.data.childType = null;
@@ -23,7 +23,7 @@ export default class NavMenuItem extends Component {
     this.data.componentProps = this.props.componentProps;
   }
 
-  publish() {
+  _publish() {
     this.props.addItem && this.props.addItem(this.props.name, this.data);
   }
 

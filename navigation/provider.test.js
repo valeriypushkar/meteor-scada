@@ -48,6 +48,11 @@ describe('navigation.provider', function() {
     unsubscribeNavigation(id);
   });
 
+  it('empty render without children', function() {
+    const wrapper = shallow(<NavigationProvider />);
+    expect(wrapper.isEmptyRender()).to.equal(true);
+  });
+
   it('handle NavMenuItem children', function() {
     const wrapper = shallow(
       <NavigationProvider>

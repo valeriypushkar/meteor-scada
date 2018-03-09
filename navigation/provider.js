@@ -28,12 +28,14 @@ export default class NavigationProvider extends Component {
   }
 
   render() {
-    const childrenWithProps = React.Children.map(this.props.children, child =>
-      React.cloneElement(child, { addItem: this._addItem }));
+    if (!this.props.children) {
+      return null;
+    }
 
     return (
       <React.Fragment>
-        {childrenWithProps ? childrenWithProps : null}
+        {React.Children.map(this.props.children,
+          child => React.cloneElement(child, { addItem: this._addItem }))}
       </React.Fragment>
     );
   }

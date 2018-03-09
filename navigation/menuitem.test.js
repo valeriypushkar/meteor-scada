@@ -40,11 +40,13 @@ describe('navigation.menuitem', function() {
     };
 
     const wrapper = shallow(<NavMenuItem {...testData} addItem={addItem} />);
+    wrapper.unmount();
   });
 
   it('empty render without children', function() {
     const wrapper = shallow(<NavMenuItem {...testData} />);
     expect(wrapper.isEmptyRender()).to.equal(true);
+    wrapper.unmount();
   });
 
   it('require name prop', function() {
@@ -60,6 +62,7 @@ describe('navigation.menuitem', function() {
     };
 
     const wrapper = shallow(<NavMenuItem name="itemname" addItem={addItem} />);
+    wrapper.unmount();
   });
 
 });

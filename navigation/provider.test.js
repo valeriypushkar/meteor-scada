@@ -32,6 +32,7 @@ describe('navigation.provider', function() {
     expect(count).to.equal(3);
 
     unsubscribeNavigation(id);
+    wrapper.unmount();
   });
 
   it('publish new data each time', function() {
@@ -46,11 +47,13 @@ describe('navigation.provider', function() {
     wrapper.setProps({});
 
     unsubscribeNavigation(id);
+    wrapper.unmount();
   });
 
   it('empty render without children', function() {
     const wrapper = shallow(<NavigationProvider />);
     expect(wrapper.isEmptyRender()).to.equal(true);
+    wrapper.unmount();
   });
 
   it('handle NavMenuItem children', function() {
@@ -67,6 +70,7 @@ describe('navigation.provider', function() {
     wrapper.find(NavMenuItem).forEach(node => {
       expect(node.props().addItem).to.be.a('function');
     });
+    wrapper.unmount();
   });
 
   it('handle wrong child element type', function() {

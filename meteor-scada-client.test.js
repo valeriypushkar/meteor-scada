@@ -5,4 +5,5 @@ configure({ adapter: new Adapter() });
 
 require('./navigation/store.test')
 require('./navigation/provider.test')
+require('./navigation/consumer.test')
 require('./navigation/menuitem.test')

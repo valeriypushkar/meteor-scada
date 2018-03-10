@@ -3,23 +3,22 @@ import { expect } from 'chai'
 import { mount } from 'enzyme'
 
 
-import NavigationConsumer from './consumer'
+import withNavigation from './consumer'
 import NavigationProvider from './provider'
 import NavMenuItem from './menuitem'
 
 
 describe('navigation.integration', function() {
   const NullComponent = () => null;
-  const ConsumeComponent = () => null;
+  const ConsumerComponent = () => null;
+  const WrappedConsumerComponent = withNavigation(ConsumerComponent);
   const TestFragment = (props) => (
     <React.Fragment>
       <NavigationProvider>
         {props.item1 && props.item1}
         {props.item2 && props.item2}
       </NavigationProvider>
-      <NavigationConsumer>
-        <ConsumeComponent />
-      </NavigationConsumer>
+      <WrappedConsumerComponent />
     </React.Fragment>
   );
 
@@ -55,12 +54,12 @@ describe('navigation.integration', function() {
 
   it('consumes navigation changes', function() {
     const wrapper = mount(<TestFragment item1={item1} />);
-    let nav = wrapper.find(ConsumeComponent).props().navigation;
+    let nav = wrapper.find(ConsumerComponent).props().navigation;
     expect(nav).to.eql({item1: dataSet1});
 
     wrapper.setProps({ item1: item1, item2: item2 });
     wrapper.update();
-    nav = wrapper.find(ConsumeComponent).props().navigation;
+    nav = wrapper.find(ConsumerComponent).props().navigation;
     expect(nav).to.eql({item1: dataSet1, item2: dataSet2});
 
     wrapper.unmount();

@@ -6,11 +6,9 @@ import { subscribeNavigation, unsubscribeNavigation } from './store'
 
 /**
  * Scada navigation consumer.
- * Propogates navigation configuratin changes to child elements as
- * `navigation` prop.
- * @public
+ * @private
  */
-export default class NavigationConsumer extends PureComponent {
+class NavigationConsumer extends PureComponent {
   state = {
     navigation: {}
   }
@@ -26,17 +24,20 @@ export default class NavigationConsumer extends PureComponent {
   onNavigationChange = (navigation) => {
     this.setState({navigation: navigation});
   }
-
-  render() {
-    if (!this.props.children) {
-      return null;
-    }
-
-    return (
-      <React.Fragment>
-        {React.Children.map(this.props.children, child =>
-          React.cloneElement(child, { navigation: this.state.navigation }))}
-      </React.Fragment>
-    );
-  }
 };
+
+/**
+ * Wrapper method for React components to have access to Scada navigation
+ * configuration. Propogates navigation configuratin changes to wrapped
+ * component as `navigation` prop.
+ * @public
+ */
+export default function withNavigation(WrappedComponent) {
+  return (
+    class NavigationConsumerImpl extends NavigationConsumer {
+      render() {
+        return <WrappedComponent {...this.props} {...this.state} />;
+      }
+    }
+  );
+}

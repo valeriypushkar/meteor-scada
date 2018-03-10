@@ -10,10 +10,10 @@ import { publishNavigation } from './store'
  * @public
  */
 export default class NavigationProvider extends Component {
-  componentWillMount  = this._initialize
-  componentDidMount   = this._publish
-  componentWillUpdate = this._initialize
-  componentDidUpdate  = this._publish
+  componentWillMount() {this._initialize();}
+  componentDidMount() {this._publish();}
+  componentWillUpdate(nextProps, nextState) {this._initialize();}
+  componentDidUpdate(prevProps, prevState) {this._publish();}
 
   _initialize() {
     this.data = {};
@@ -34,8 +34,8 @@ export default class NavigationProvider extends Component {
 
     return (
       <React.Fragment>
-        {React.Children.map(this.props.children,
-          child => React.cloneElement(child, { addItem: this._addItem }))}
+        {React.Children.map(this.props.children, child =>
+          child && React.cloneElement(child, { addItem: this._addItem }))}
       </React.Fragment>
     );
   }
@@ -47,6 +47,10 @@ NavigationProvider.propTypes = {
     const childNames = new Set();
 
     React.Children.forEach(props[propName], function(child) {
+      if (!child) {
+        return;
+      }
+
       if (child.type !== NavMenuItem) {
         error = new Error('`' + componentName + '` children should be '
           + 'of type `NavMenuItem` only.');

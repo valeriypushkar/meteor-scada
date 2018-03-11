@@ -1,3 +1,6 @@
+import { Meteor } from 'meteor/meteor'
+import { Roles } from 'meteor/alanning:roles'
+
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
@@ -33,10 +36,15 @@ class MainLayout extends Component {
     const { classes } = this.props;
     const { sideBarOpen } = this.state;
 
+    // Add adminMenu only if user is in admin role
+    const navigation = Roles.userIsInRole( Meteor.userId(), 'admin' ) ?
+      [adminMenu, ...this.props.navigation] : this.props.navigation;
+
     return(
       <div className={classes.root}>
         <NavigationBar onToggle={this.handleSideBarToggle}/>
-        <SideBar mobileOpen={sideBarOpen} onClose={this.handleSideBarToggle}/>
+        <SideBar navigation={navigation}
+          mobileOpen={sideBarOpen} onClose={this.handleSideBarToggle}/>
         <main className={classes.content}>
           <div className={classes.toolbar} />
           <Typography noWrap>{'Main content'}</Typography>
@@ -51,6 +59,26 @@ class MainLayout extends Component {
     return navigation.length ? this.renderLayout() : this.renderLoading();
   }
 }
+
+const adminMenu = {
+  name: 'admin',
+  type: 'menuitem',
+  icon: 'settings',
+  title: 'Administrator',
+  children: [
+    {
+      name: 'users',
+      type: 'submenuitem',
+      title: 'Users'
+    },
+    {
+      name: 'devices',
+      type: 'submenuitem',
+      title: 'Devices'
+    }
+  ],
+  divider: true
+};
 
 MainLayout.propTypes = {
   classes: PropTypes.object.isRequired,

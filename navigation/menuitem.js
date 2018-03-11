@@ -18,8 +18,7 @@ export default class NavMenuItem extends Component {
 
     this.data = { children: [] };
     this.data.name = props.name;
-    this.data.type = "NavMenuItem";
-    this.data.childType = null;
+    this.data.type = 'menuitem';
     this.data.icon = props.icon;
     this.data.title = props.title ? props.title : props.name;
     this.data.component = props.component;

@@ -17,49 +17,73 @@ import { IMG_LOGO } from '../../resources/catalog'
  * @private
  */
 class SideBar extends Component {
-  state = { open: false };
+  state = { expanded: {} };
 
-  handleClick = () => {
-    this.setState({ open: !this.state.open });
+  handleExpand = (name) => () => {
+    const { expanded } = this.state;
+    expanded[name] = !expanded[name];
+    this.setState({ expanded: expanded });
   };
 
-  renderMenu() {
+  renderMenuItem(item) {
     const { classes } = this.props;
 
-    return(
-      <React.Fragment>
-        <List component="nav">
-          <ListItem button onClick={this.handleClick}>
-            <ListItemIcon>
-              <Icon className={classes.icon}>settings</Icon>
-            </ListItemIcon>
-            <ListItemText primary="Administrator" />
-            <Icon className={classes.expandIcon}>
-              {this.state.open ? "expand_less" : "expand_more"}
-            </Icon>
-          </ListItem>
-          <Collapse in={this.state.open} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
-              <ListItem button className={classes.submenu}>
-                <ListItemText primary="Settings" />
-              </ListItem>
-              <ListItem button className={classes.submenu}>
-                <ListItemText primary="Users" />
-              </ListItem>
-              <ListItem button className={classes.submenu}>
-                <ListItemText primary="Devices" />
-              </ListItem>
-            </List>
-          </Collapse>
-          <Divider />
-          <ListItem button>
-            <ListItemIcon>
-              <Icon className={classes.icon}>dashboard</Icon>
-            </ListItemIcon>
-            <ListItemText primary="User menu" />
-          </ListItem>
-        </List>
+    return (
+      <React.Fragment key={item.name}>
+        <ListItem button>
+          <ListItemIcon>
+            <Icon className={classes.icon}>{item.icon}</Icon>
+          </ListItemIcon>
+          <ListItemText primary={item.title} />
+        </ListItem>
+        {item.divider && <Divider />}
       </React.Fragment>
+    );
+  }
+
+  renderSubMenu(item) {
+    const { classes } = this.props;
+    const expanded = this.state.expanded[item.name];
+
+    return (
+      <React.Fragment key={item.name}>
+        <ListItem button onClick={this.handleExpand(item.name)}>
+          <ListItemIcon>
+            <Icon className={classes.icon}>{item.icon}</Icon>
+          </ListItemIcon>
+          <ListItemText primary={item.title} />
+          <Icon className={classes.expandIcon}>
+            {expanded ? "expand_less" : "expand_more"}
+          </Icon>
+        </ListItem>
+        <Collapse in={expanded} timeout="auto" unmountOnExit>
+          <List component="div" disablePadding>
+            {item.children.map(item => this.renderSubMenuItem(item))}
+          </List>
+        </Collapse>
+        {item.divider && <Divider />}
+      </React.Fragment>
+    );
+  }
+
+  renderSubMenuItem(item) {
+    const { classes } = this.props;
+
+    return (
+      <ListItem key={item.name} button className={classes.submenu}>
+        <ListItemText primary={item.title} />
+      </ListItem>
+    );
+  }
+
+  renderMenu() {
+    const { navigation } = this.props;
+
+    return(
+      <List component="nav">
+        {navigation.map(item => item.children.length ?
+          this.renderSubMenu(item) : this.renderMenuItem(item))}
+      </List>
     );
   }
 

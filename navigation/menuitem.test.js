@@ -40,8 +40,7 @@ describe('navigation.menuitem', function() {
     const addItem = (data) => {
       expect(data.name).to.equal(testData.name);
       expect(data.children).to.be.empty;
-      expect(data.type).to.equal('NavMenuItem');
-      expect(data.childType).to.be.null;
+      expect(data.type).to.equal('menuitem');
       expect(data.icon).to.equal(testData.icon);
       expect(data.title).to.equal(testData.title);
       expect(data.component).to.equal(testData.component);

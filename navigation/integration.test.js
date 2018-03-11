@@ -25,8 +25,7 @@ describe('navigation.integration', function() {
   const dataSet1 = {
     children: [],
     name: 'item1',
-    type: 'NavMenuItem',
-    childType: null,
+    type: 'menuitem',
     icon: 'item',
     title: 'Item 1',
     component: NullComponent,
@@ -41,8 +40,7 @@ describe('navigation.integration', function() {
   const dataSet2 = {
     children: [],
     name: 'item2',
-    type: 'NavMenuItem',
-    childType: null,
+    type: 'menuitem',
     icon: 'item',
     title: 'Item 2',
     component: NullComponent,

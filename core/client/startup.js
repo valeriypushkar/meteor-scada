@@ -28,6 +28,7 @@ Meteor.startup(() => {
   ReactDOM.render(
     <MuiThemeProvider theme={theme}>
       <Reboot/>
+      {MeteorScada._navigationProvider}
       <BrowserRouter>
         <Switch>
           <Route path="/login" component={LoginPage}/>

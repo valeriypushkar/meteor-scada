@@ -1,12 +1,14 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
 import Typography from 'material-ui/Typography'
 import { withStyles } from 'material-ui/styles'
 
 import MeteorScada from '../common/namespace'
+import withNavigation from '../../navigation/consumer'
 import NavigationBar from './navbar'
 import SideBar from './sidebar'
+import LoadingPage from './loading'
 
 /**
  * Main layout of the SCADA application.
@@ -21,7 +23,13 @@ class MainLayout extends Component {
     this.setState({ sideBarOpen: !this.state.sideBarOpen });
   }
 
-  render() {
+  renderLoading() {
+    return (
+      <LoadingPage />
+    );
+  }
+
+  renderLayout() {
     const { classes } = this.props;
     const { sideBarOpen } = this.state;
 
@@ -35,6 +43,12 @@ class MainLayout extends Component {
         </main>
       </div>
     );
+  }
+
+  render() {
+    const { navigation } = this.props;
+    // If navigation depends on data from server, loading can take some time
+    return navigation ? this.renderLayout() : this.renderLoading();
   }
 }
 
@@ -59,4 +73,4 @@ const styles = theme => ({
   },
 });
 
-export default withStyles(styles)(MainLayout);
+export default withStyles(styles)(withNavigation(MainLayout));

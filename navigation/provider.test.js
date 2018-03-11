@@ -3,7 +3,7 @@ import { expect } from 'chai'
 import { shallow } from 'enzyme'
 
 import { subscribeNavigation, unsubscribeNavigation } from './store'
-import NavigationProvider from './provider'
+import NavigationProvider, {configureNavigation} from './provider'
 import NavMenuItem from './menuitem'
 
 describe('navigation.provider', function() {
@@ -89,5 +89,28 @@ describe('navigation.provider', function() {
         <NavMenuItem name="name1" />
       </NavigationProvider>
     )).to.throw();
+  });
+
+  it('register navigation provider', function() {
+    expect(MeteorScada._navigationProvider).to.be.null;
+
+    const provider = () => (<NavigationProvider />);
+    configureNavigation(provider);
+
+    expect(MeteorScada._navigationProvider.type).to.be.equal(provider);
+    MeteorScada._navigationProvider = null; // clean up
+  });
+
+  it('not valid provider registration', function() {
+    expect(() => configureNavigation(null)).to.throw();
+    expect(() => configureNavigation(10)).to.throw();
+    expect(() => configureNavigation(<NavigationProvider />)).to.throw();
+  });
+
+  it('double provider registration call', function() {
+    const provider = () => (<NavigationProvider />);
+    configureNavigation(provider);
+    expect(() => configureNavigation(provider)).to.throw();
+    MeteorScada._navigationProvider = null; // clean up
   });
 });

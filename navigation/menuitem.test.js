@@ -37,8 +37,8 @@ describe('navigation.menuitem', function() {
 
   it('publish menuitem props', function() {
     let testData;
-    const addItem = (name, data) => {
-      expect(name).to.equal(testData.name);
+    const addItem = (data) => {
+      expect(data.name).to.equal(testData.name);
       expect(data.children).to.be.empty;
       expect(data.type).to.equal('NavMenuItem');
       expect(data.childType).to.be.null;
@@ -70,8 +70,8 @@ describe('navigation.menuitem', function() {
   });
 
   it('default title value', function() {
-    const addItem = (name, data) => {
-      expect(name).to.equal("itemname");
+    const addItem = (data) => {
+      expect(data.name).to.equal("itemname");
       expect(data.title).to.equal("itemname");
     };
 

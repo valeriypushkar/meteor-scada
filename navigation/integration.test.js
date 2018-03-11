@@ -23,7 +23,8 @@ describe('navigation.integration', function() {
   );
 
   const dataSet1 = {
-    children: {},
+    children: [],
+    name: 'item1',
     type: 'NavMenuItem',
     childType: null,
     icon: 'item',
@@ -38,7 +39,8 @@ describe('navigation.integration', function() {
   );
 
   const dataSet2 = {
-    children: {},
+    children: [],
+    name: 'item2',
     type: 'NavMenuItem',
     childType: null,
     icon: 'item',
@@ -55,12 +57,12 @@ describe('navigation.integration', function() {
   it('consumes navigation changes', function() {
     const wrapper = mount(<TestFragment item1={item1} />);
     let nav = wrapper.find(ConsumerComponent).props().navigation;
-    expect(nav).to.eql({item1: dataSet1});
+    expect(nav).to.eql([dataSet1]);
 
     wrapper.setProps({ item1: item1, item2: item2 });
     wrapper.update();
     nav = wrapper.find(ConsumerComponent).props().navigation;
-    expect(nav).to.eql({item1: dataSet1, item2: dataSet2});
+    expect(nav).to.eql([dataSet1, dataSet2]);
 
     wrapper.unmount();
   });

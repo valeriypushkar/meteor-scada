@@ -17,15 +17,15 @@ export default class NavigationProvider extends Component {
   componentDidUpdate = this._publish;
 
   _initialize() {
-    this.data = {};
+    this.data = [];
   }
 
   _publish() {
     publishNavigation(this.data);
   }
 
-  _addItem = (name, item) => {
-    this.data[name] = item;
+  _addItem = (item) => {
+    this.data.push(item);
   }
 
   render() {

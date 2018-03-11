@@ -48,7 +48,7 @@ class MainLayout extends Component {
   render() {
     const { navigation } = this.props;
     // If navigation depends on data from server, loading can take some time
-    return navigation ? this.renderLayout() : this.renderLoading();
+    return navigation.length ? this.renderLayout() : this.renderLoading();
   }
 }
 

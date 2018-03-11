@@ -36,7 +36,7 @@ describe('navigation.provider', function() {
   });
 
   it('publish new data each time', function() {
-    let current = {};
+    let current = null;
     const id = subscribeNavigation(data => {
       expect(current).to.not.equal(data);
       current = data;

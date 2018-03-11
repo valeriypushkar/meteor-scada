@@ -15,8 +15,9 @@ export default class NavMenuItem extends Component {
 
   _initialize(props) {
     props = props ? props : this.props;
-    
-    this.data = { children: {} };
+
+    this.data = { children: [] };
+    this.data.name = props.name;
     this.data.type = "NavMenuItem";
     this.data.childType = null;
     this.data.icon = props.icon;
@@ -26,7 +27,7 @@ export default class NavMenuItem extends Component {
   }
 
   _publish() {
-    this.props.addItem && this.props.addItem(this.props.name, this.data);
+    this.props.addItem && this.props.addItem(this.data);
   }
 
   render() {

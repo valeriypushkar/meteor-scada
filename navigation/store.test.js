@@ -6,13 +6,13 @@ import {
   unsubscribeNavigation } from './store'
 
 describe('navigation.store', function() {
-  let current = {};
-  const data1 = { data1: 1 };
-  const data2 = { data2: 2 };
-  const data3 = { data3: 3 };
+  let current = [];
+  const data1 = [{ data1: 1 }];
+  const data2 = [{ data2: 2 }];
+  const data3 = [{ data3: 3 }];
 
   beforeEach(function() {
-    current = {};
+    current = [];
     publishNavigation(current);
   });
 

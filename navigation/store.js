@@ -7,7 +7,7 @@ import MeteorScada from '../core/common/namespace'
  * @private
  */
 
-var navigation = null;
+var navigation = [];
 var subscribers = new Map();
 var lastId = 1;
 

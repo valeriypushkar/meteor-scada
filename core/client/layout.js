@@ -1,8 +1,10 @@
 import { Meteor } from 'meteor/meteor'
 import { Roles } from 'meteor/alanning:roles'
+import { withTracker } from 'meteor/react-meteor-data'
 
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import { Switch, Route, Redirect } from 'react-router-dom'
 
 import Typography from 'material-ui/Typography'
 import { withStyles } from 'material-ui/styles'
@@ -12,6 +14,9 @@ import withNavigation from '../../navigation/consumer'
 import NavigationBar from './navbar'
 import SideBar from './sidebar'
 import LoadingPage from './loading'
+import NotFoundPage from './notfound'
+import UserPage from './users'
+import DevicePage from './devices'
 
 /**
  * Main layout of the SCADA application.
@@ -19,44 +24,64 @@ import LoadingPage from './loading'
  */
 class MainLayout extends Component {
   state = {
-    sideBarOpen: false,
+    sideBarOpen: false
   };
 
-  handleSideBarToggle = () => {
+  _handleSideBarToggle = () => {
     this.setState({ sideBarOpen: !this.state.sideBarOpen });
   }
 
-  renderLoading() {
-    return (
-      <LoadingPage />
-    );
+  _renderNavRoute(item, path) {
+    path = (path || '') + '/' + item.name;
+
+    if (!(item.children && item.children.length)) {
+      return <Route key={path} path={path} exact component={item.component}/>;
+    } else if (item.children[0].type === 'submenuitem') {
+      return item.children.map(child => this._renderNavRoute(child, path));
+    } else if (item.children[0].type === 'tabitem') {
+      return null; // TODO: implement tab item
+    } else {
+      return null;
+    }
   }
 
-  renderLayout() {
-    const { classes } = this.props;
+  _renderLayout() {
+    const { classes, navigation, user } = this.props;
     const { sideBarOpen } = this.state;
 
+    // Redirect home to the first user defined page
+    var home = '/' + navigation[0].name;
+    if (navigation[0].children && navigation[0].children.length) {
+      home += '/' + navigation[0].children[0].name;
+    }
+
     // Add adminMenu only if user is in admin role
-    const navigation = Roles.userIsInRole( Meteor.userId(), 'admin' ) ?
-      [adminMenu, ...this.props.navigation] : this.props.navigation;
+    const adminNavigation =
+      Roles.userIsInRole( user, 'admin' ) ? [adminMenu] : [];
 
     return(
       <div className={classes.root}>
         <NavigationBar onToggle={this.handleSideBarToggle}/>
-        <SideBar navigation={navigation}
+        <SideBar navigation={navigation} adminNavigation={adminNavigation}
           mobileOpen={sideBarOpen} onClose={this.handleSideBarToggle}/>
         <main className={classes.content}>
           <div className={classes.toolbar} />
-          <Typography noWrap>{'Main content'}</Typography>
+          <Switch>
+            <Redirect from='/' exact to={home} />
+            {adminNavigation.flatMap(item => this._renderNavRoute(item))}
+            {navigation.flatMap(item => this._renderNavRoute(item))}
+            <Route component={ NotFoundPage } />
+          </Switch>
         </main>
       </div>
     );
   }
 
   render() {
-    const { navigation } = this.props;
-    // If navigation depends on data from server, loading can take some time
-    return navigation.length ? this.renderLayout() : this.renderLoading();
+    // If navigation depends on data from server, the loading can take some time
+    // We also need to wait when user info is loaded from server
+    const { navigation, user } = this.props;
+    return (navigation.length && user) ? this._renderLayout() : <LoadingPage />;
   }
 }
 
@@ -69,19 +94,22 @@ const adminMenu = {
     {
       name: 'users',
       type: 'submenuitem',
-      title: 'Users'
+      title: 'Users',
+      component: UserPage
     },
     {
       name: 'devices',
       type: 'submenuitem',
-      title: 'Devices'
+      title: 'Devices',
+      component: DevicePage
     }
-  ],
-  divider: true
+  ]
 };
 
 MainLayout.propTypes = {
   classes: PropTypes.object.isRequired,
+  navigation: PropTypes.array.isRequired,
+  user: PropTypes.object,
 };
 
 const styles = theme => ({
@@ -101,4 +129,6 @@ const styles = theme => ({
   },
 });
 
-export default withStyles(styles)(withNavigation(MainLayout));
+export default withStyles(styles)(withNavigation(
+  withTracker(() => ({ user: Meteor.user() }))(MainLayout)
+));

@@ -25,6 +25,7 @@ Package.onUse(function(api) {
   api.imply('standard-minifier-js@2.3.2');
 
   // Data management
+  api.use('react-meteor-data@0.2.16');
   api.use('ddp-rate-limiter@1.0.7');
 
   // Accounts

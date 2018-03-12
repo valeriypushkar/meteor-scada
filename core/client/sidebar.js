@@ -29,15 +29,12 @@ class SideBar extends Component {
     const { classes } = this.props;
 
     return (
-      <React.Fragment key={item.name}>
-        <ListItem button>
-          <ListItemIcon>
-            <Icon className={classes.icon}>{item.icon}</Icon>
-          </ListItemIcon>
-          <ListItemText primary={item.title} />
-        </ListItem>
-        {item.divider && <Divider />}
-      </React.Fragment>
+      <ListItem key={item.name} button>
+        <ListItemIcon>
+          <Icon className={classes.icon}>{item.icon}</Icon>
+        </ListItemIcon>
+        <ListItemText primary={item.title} />
+      </ListItem>
     );
   }
 
@@ -61,7 +58,6 @@ class SideBar extends Component {
             {item.children.map(item => this.renderSubMenuItem(item))}
           </List>
         </Collapse>
-        {item.divider && <Divider />}
       </React.Fragment>
     );
   }
@@ -77,12 +73,17 @@ class SideBar extends Component {
   }
 
   renderMenu() {
-    const { navigation } = this.props;
+    const { navigation, adminNavigation } = this.props;
 
     return(
       <List component="nav">
-        {navigation.map(item => item.children.length ?
-          this.renderSubMenu(item) : this.renderMenuItem(item))}
+        {adminNavigation.map(item =>
+          (item.children.length && item.children[0].type === 'submenuitem') ?
+            this.renderSubMenu(item) : this.renderMenuItem(item))}
+        {adminNavigation.length && <Divider />}
+        {navigation.map(item =>
+          (item.children.length && item.children[0].type === 'submenuitem') ?
+            this.renderSubMenu(item) : this.renderMenuItem(item))}
       </List>
     );
   }
@@ -124,6 +125,8 @@ SideBar.propTypes = {
   classes: PropTypes.object.isRequired,
   mobileOpen: PropTypes.bool,
   onClose: PropTypes.func,
+  navigation: PropTypes.array.isRequired,
+  adminNavigation: PropTypes.array.isRequired,
 };
 
 const drawerWidth = 240;

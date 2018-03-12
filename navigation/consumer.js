@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
 import MeteorScada from '../core/common/namespace'
@@ -8,7 +8,7 @@ import { subscribeNavigation, unsubscribeNavigation } from './store'
  * Scada navigation consumer.
  * @private
  */
-class NavigationConsumer extends PureComponent {
+class NavigationConsumer extends Component {
   state = {
     navigation: {}
   }

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { NavLink } from 'react-router-dom';
+import { Route, NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types'
 
 import Drawer from 'material-ui/Drawer'
@@ -10,8 +10,6 @@ import Collapse from 'material-ui/transitions/Collapse'
 import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List'
 import { withStyles } from 'material-ui/styles'
 
-import { IMG_LOGO } from '../../resources/catalog'
-
 /**
  * SCADA application side navigation bar.
  * @private
@@ -19,17 +17,44 @@ import { IMG_LOGO } from '../../resources/catalog'
 class SideBar extends Component {
   state = { expanded: {} };
 
-  handleExpand = (name) => () => {
+  _handleExpand = (name) => () => {
     const { expanded } = this.state;
     expanded[name] = !expanded[name];
     this.setState({ expanded: expanded });
   };
 
-  renderMenuItem(item) {
+  _handleClick = () => {
+    if (this.props.mobileOpen) {
+      this.props.onClose();
+    }
+  }
+
+  _renderMenu() {
+    const { navigation, adminNavigation } = this.props;
+
+    return(
+      <List component="nav">
+        {this._renderMenuItems(adminNavigation)}
+        {adminNavigation.length && <Divider />}
+        {this._renderMenuItems(navigation)}
+      </List>
+    );
+  }
+
+  _renderMenuItems(items) {
+    return items.map(item =>
+      (item.children.length && item.children[0].type === 'submenuitem') ?
+        this._renderSubMenu(item) : this._renderMenuItem(item));
+  }
+
+  _renderMenuItem(item) {
     const { classes } = this.props;
+    const path = '/' + item.name;
 
     return (
-      <ListItem key={item.name} button>
+      <ListItem key={item.name} onClick={this._handleClick}
+        component={NavLink} to={path} activeClassName={classes.selected}
+      >
         <ListItemIcon>
           <Icon className={classes.icon}>{item.icon}</Icon>
         </ListItemIcon>
@@ -38,53 +63,46 @@ class SideBar extends Component {
     );
   }
 
-  renderSubMenu(item) {
+  _renderSubMenu(item) {
     const { classes } = this.props;
+    const path = '/' + item.name;
     const expanded = this.state.expanded[item.name];
 
     return (
       <React.Fragment key={item.name}>
-        <ListItem button onClick={this.handleExpand(item.name)}>
-          <ListItemIcon>
-            <Icon className={classes.icon}>{item.icon}</Icon>
-          </ListItemIcon>
-          <ListItemText primary={item.title} />
-          <Icon className={classes.expandIcon}>
-            {expanded ? "expand_less" : "expand_more"}
-          </Icon>
-        </ListItem>
+        <Route path={path} children={({ match }) => (
+          <ListItem button onClick={this._handleExpand(item.name)}
+            className={match && !expanded ? classes.selected : ''}
+          >
+            <ListItemIcon>
+              <Icon className={classes.icon}>{item.icon}</Icon>
+            </ListItemIcon>
+            <ListItemText primary={item.title} />
+            <Icon className={classes.expandIcon}>
+              {expanded ? "expand_less" : "expand_more"}
+            </Icon>
+          </ListItem>
+        )} />
         <Collapse in={expanded} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
-            {item.children.map(item => this.renderSubMenuItem(item))}
+            {item.children.map(item => this._renderSubMenuItem(item, path))}
           </List>
         </Collapse>
       </React.Fragment>
     );
   }
 
-  renderSubMenuItem(item) {
+  _renderSubMenuItem(item, parentPath) {
     const { classes } = this.props;
+    const path = parentPath + '/' + item.name;
 
     return (
-      <ListItem key={item.name} button className={classes.submenu}>
+      <ListItem key={item.name}
+        className={classes.submenu} onClick={this._handleClick}
+        component={NavLink} to={path} activeClassName={classes.selected}
+      >
         <ListItemText primary={item.title} />
       </ListItem>
-    );
-  }
-
-  renderMenu() {
-    const { navigation, adminNavigation } = this.props;
-
-    return(
-      <List component="nav">
-        {adminNavigation.map(item =>
-          (item.children.length && item.children[0].type === 'submenuitem') ?
-            this.renderSubMenu(item) : this.renderMenuItem(item))}
-        {adminNavigation.length && <Divider />}
-        {navigation.map(item =>
-          (item.children.length && item.children[0].type === 'submenuitem') ?
-            this.renderSubMenu(item) : this.renderMenuItem(item))}
-      </List>
     );
   }
 
@@ -99,7 +117,7 @@ class SideBar extends Component {
             classes={{paper: classes.drawerPaper}}
           >
             <div className={classes.toolbar} />
-            {this.renderMenu()}
+            {this._renderMenu()}
           </Drawer>
         </Hidden>
         <Hidden mdUp>
@@ -112,7 +130,7 @@ class SideBar extends Component {
           >
             <div className={classes.toolbar} />
             <Divider />
-            {this.renderMenu()}
+            {this._renderMenu()}
           </Drawer>
         </Hidden>
       </React.Fragment>
@@ -135,9 +153,7 @@ const styles = theme => ({
   toolbar: theme.mixins.toolbar,
   drawerPaper: {
     width: drawerWidth,
-    [theme.breakpoints.up('md')]: {
-      position: 'relative',
-    },
+    [theme.breakpoints.up('md')]: { position: 'relative', },
   },
   icon: {
     margin: 0,
@@ -147,6 +163,9 @@ const styles = theme => ({
   },
   submenu: {
     paddingLeft: theme.spacing.unit * 4,
+  },
+  selected: {
+    background: theme.palette.action.selected,
   }
 });
 

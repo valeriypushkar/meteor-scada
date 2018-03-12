@@ -61,9 +61,9 @@ class MainLayout extends Component {
 
     return(
       <div className={classes.root}>
-        <NavigationBar onToggle={this.handleSideBarToggle}/>
+        <NavigationBar onToggle={this._handleSideBarToggle}/>
         <SideBar navigation={navigation} adminNavigation={adminNavigation}
-          mobileOpen={sideBarOpen} onClose={this.handleSideBarToggle}/>
+          mobileOpen={sideBarOpen} onClose={this._handleSideBarToggle}/>
         <main className={classes.content}>
           <div className={classes.toolbar} />
           <Switch>
@@ -129,6 +129,10 @@ const styles = theme => ({
   },
 });
 
+
 export default withStyles(styles)(withNavigation(
-  withTracker(() => ({ user: Meteor.user() }))(MainLayout)
+  withTracker({
+    getMeteorData: () => ({ user: Meteor.user() }),
+    pure: false
+  })(MainLayout)
 ));

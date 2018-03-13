@@ -55,9 +55,11 @@ class SideNavigation extends Component {
       <ListItem key={item.name} button onClick={this._handleClick}
         component={NavLink} to={path} activeClassName={classes.selected}
       >
-        <ListItemIcon>
-          <Icon className={classes.icon}>{item.icon}</Icon>
-        </ListItemIcon>
+        {item.icon &&
+          <ListItemIcon>
+            <Icon className={classes.icon}>{item.icon}</Icon>
+          </ListItemIcon>
+        }
         <ListItemText primary={item.title} />
       </ListItem>
     );
@@ -74,9 +76,11 @@ class SideNavigation extends Component {
           <ListItem button onClick={this._handleExpand(item.name)}
             className={match && !expanded ? classes.selected : ''}
           >
-            <ListItemIcon>
-              <Icon className={classes.icon}>{item.icon}</Icon>
-            </ListItemIcon>
+            {item.icon &&
+              <ListItemIcon>
+                <Icon className={classes.icon}>{item.icon}</Icon>
+              </ListItemIcon>
+            }
             <ListItemText primary={item.title} />
             <Icon className={classes.expandIcon}>
               {expanded ? "expand_less" : "expand_more"}
@@ -128,7 +132,6 @@ class SideNavigation extends Component {
             classes={{paper: classes.drawerPaper}}
             ModalProps={{keepMounted: true}}
           >
-            <div className={classes.toolbar} />
             <Divider />
             {this._renderMenu()}
           </Drawer>
@@ -138,7 +141,6 @@ class SideNavigation extends Component {
   }
 }
 
-
 SideNavigation.propTypes = {
   classes: PropTypes.object.isRequired,
   mobileOpen: PropTypes.bool,
@@ -147,7 +149,7 @@ SideNavigation.propTypes = {
   adminNavigation: PropTypes.array.isRequired,
 };
 
-const drawerWidth = 240;
+const drawerWidth = 260;
 
 const styles = theme => ({
   toolbar: theme.mixins.toolbar,

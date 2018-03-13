@@ -4,22 +4,19 @@ import { shallow } from 'enzyme'
 
 import NavTabItem from './tabitem'
 import NavSubMenuItem from './submenuitem'
-import NavMenuItem from './menuitem'
 
-describe('navigation.menuitem', function() {
+describe('navigation.submenuitem', function() {
   const saveConsoleWarn = console.warn;
   const saveConsoleError = console.error;
 
   const testData1 = {
     name: 'itemname',
-    icon: 'itemicon',
     title: 'itemtitle',
     component: () => null,
   };
 
   const testData2 = {
     name: 'itemname2',
-    icon: 'itemicon2',
     title: 'itemtitle2',
     component: () => null,
   };
@@ -35,19 +32,18 @@ describe('navigation.menuitem', function() {
     console.error = saveConsoleError;
   });
 
-  it('publish menuitem props', function() {
+  it('publish tabitem props', function() {
     let testData;
     const addItem = (data) => {
       expect(data.name).to.equal(testData.name);
-      expect(data.children).to.be.empty;
-      expect(data.type).to.equal('menuitem');
-      expect(data.icon).to.equal(testData.icon);
+      expect(data.type).to.equal('submenuitem');
       expect(data.title).to.equal(testData.title);
       expect(data.component).to.equal(testData.component);
+      expect(data.children).to.be.empty;
     };
 
     testData = testData1;
-    const wrapper = shallow(<NavMenuItem {...testData} addItem={addItem} />);
+    const wrapper = shallow(<NavSubMenuItem {...testData} addItem={addItem} />);
 
     testData = testData2;
     wrapper.setProps({...testData});
@@ -56,14 +52,14 @@ describe('navigation.menuitem', function() {
   });
 
   it('empty render without children', function() {
-    const wrapper = shallow(<NavMenuItem {...testData1} />);
+    const wrapper = shallow(<NavSubMenuItem {...testData1} />);
     expect(wrapper.isEmptyRender()).to.equal(true);
     wrapper.unmount();
   });
 
   it('require name prop', function() {
     expect(() => (
-      <NavMenuItem title="title" />
+      <NavSubMenuItem title="title" />
     )).to.throw();
   });
 
@@ -73,34 +69,17 @@ describe('navigation.menuitem', function() {
       expect(data.title).to.equal("itemname");
     };
 
-    const wrapper = shallow(<NavMenuItem name="itemname" addItem={addItem} />);
-    wrapper.unmount();
-  });
-
-  it('handle NavSubMenuItem children', function() {
-    const wrapper = shallow(
-      <NavMenuItem>
-        <NavSubMenuItem name="name1" />
-        <NavSubMenuItem name="name2" />
-        <NavSubMenuItem name="name3" />
-      </NavMenuItem>
-    );
-
-    expect(wrapper.find(NavSubMenuItem)).to.have.length(3);
-
-    wrapper.find(NavSubMenuItem).forEach(node => {
-      expect(node.props().addItem).to.be.a('function');
-    });
+    const wrapper = shallow(<NavSubMenuItem name="itemname" addItem={addItem} />);
     wrapper.unmount();
   });
 
   it('handle NavTabItem children', function() {
     const wrapper = shallow(
-      <NavMenuItem>
+      <NavSubMenuItem>
         <NavTabItem name="name1" />
         <NavTabItem name="name2" />
         <NavTabItem name="name3" />
-      </NavMenuItem>
+      </NavSubMenuItem>
     );
 
     expect(wrapper.find(NavTabItem)).to.have.length(3);
@@ -113,28 +92,19 @@ describe('navigation.menuitem', function() {
 
   it('handle wrong child element type', function() {
     expect(() => (
-      <NavMenuItem>
+      <NavSubMenuItem>
         <div />
-      </NavMenuItem>
-    )).to.throw();
-  });
-
-  it('handle mixed child element type', function() {
-    expect(() => (
-      <NavMenuItem>
-        <NavSubMenuItem name="name1" />
-        <NavTabItem name="name2" />
-      </NavMenuItem>
+      </NavSubMenuItem>
     )).to.throw();
   });
 
   it('handle non-unique names of child elements', function() {
     expect(() => (
-      <NavMenuItem>
+      <NavSubMenuItem>
         <NavTabItem name="name1" />
         <NavTabItem name="name2" />
         <NavTabItem name="name1" />
-      </NavMenuItem>
+      </NavSubMenuItem>
     )).to.throw();
   });
 

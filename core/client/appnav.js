@@ -115,6 +115,8 @@ const styles = theme => ({
     [theme.breakpoints.down('sm')]: {
       display: 'none',
     },
+    paddingLeft: 10,
+    paddingRight: 10,
   },
   separator: {
     marginLeft: 10,

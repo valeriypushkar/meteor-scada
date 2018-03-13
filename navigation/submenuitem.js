@@ -3,13 +3,12 @@ import PropTypes from 'prop-types'
 
 import MeteorScada from '../core/common/namespace'
 import NavTabItem from './tabitem'
-import NavSubMenuItem from './submenuitem'
 
 /**
- * Scada top-level menu item.
+ * Scada sub-menu item.
  * @public
  */
-export default class NavMenuItem extends Component {
+export default class NavSubMenuItem extends Component {
   componentWillMount = this._initialize;
   componentDidMount = this._publish;
   componentWillUpdate = this._initialize;
@@ -20,8 +19,7 @@ export default class NavMenuItem extends Component {
 
     this.data = { children: [] };
     this.data.name = props.name;
-    this.data.type = 'menuitem';
-    this.data.icon = props.icon;
+    this.data.type = 'submenuitem';
     this.data.title = props.title ? props.title : props.name;
     this.data.component = props.component;
   }
@@ -48,23 +46,16 @@ export default class NavMenuItem extends Component {
   }
 }
 
-NavMenuItem.propTypes = {
+NavSubMenuItem.propTypes = {
   /**
    * Unique name of menu item.
    * This name will be a part of url. If this item defines teminate route
-   * (doesn't have children) the url is <IP>/<name>.
-   * Path to the children is <IP>/<name>/<child name>.
+   * (doesn't have children) the url is <IP>/<menuitem>/<name>.
    */
   name: PropTypes.string.isRequired,
 
   /**
-   * Material icon CSS name.
-   * @see http://material.io/icons/
-   */
-  icon: PropTypes.string,
-
-  /**
-   * Title of menu item.
+   * Title of sub-menu item.
    * This is what user sees on the screen.
    */
   title: PropTypes.string,
@@ -76,11 +67,10 @@ NavMenuItem.propTypes = {
   component: PropTypes.func,
 
   /**
-   * `NavSubMenuItem` or `TabItem` elements.
+   * `NavTabItem` elements.
    */
   children: function (props, propName, componentName) {
     let error = null;
-    let childType = null;
     const childNames = new Set();
 
     React.Children.forEach(props[propName], function(child) {
@@ -88,22 +78,16 @@ NavMenuItem.propTypes = {
         return;
       }
 
-      if (child.type !== NavSubMenuItem && child.type !== NavTabItem) {
+      if (child.type !== NavTabItem) {
         error = new Error('`' + componentName + '` children should be '
-          + 'of type `NavSubMenuItem` or `NavTabItem` only.');
-      }
-
-      if (childType && childType !== child.type) {
-        error = new Error('`' + componentName + '` children should be '
-          + 'either `NavSubMenuItem` or `NavTabItem` but not both.');
+          + 'of type `NavTabItem` only.');
       }
 
       if (childNames.has(child.props.name)) {
         error = new Error('Child element `' + child.props.name + '` already '
-          + 'exists. Use unique names for `NavMenuItem` child elements');
+          + 'exists. Use unique names for `NavSubMenuItem` child elements');
       }
 
-      childType = child.type;
       childNames.add(child.props.name);
     });
 

@@ -19,7 +19,7 @@ import { IMG_LOGO } from '../../resources/catalog'
  * SCADA application navigation bar.
  * @private
  */
-class NavigationBar extends Component {
+class AppNavigation extends Component {
   state = {
     accountMenuAnchor: null,
   }
@@ -89,7 +89,7 @@ class NavigationBar extends Component {
   }
 }
 
-NavigationBar.propTypes = {
+AppNavigation.propTypes = {
   classes: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,
   onToggle: PropTypes.func,
@@ -133,4 +133,4 @@ const styles = theme => ({
   },
 });
 
-export default withStyles(styles)(withRouter(NavigationBar));
+export default withStyles(styles)(withRouter(AppNavigation));

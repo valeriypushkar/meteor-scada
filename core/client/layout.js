@@ -11,8 +11,9 @@ import { withStyles } from 'material-ui/styles'
 
 import MeteorScada from '../common/namespace'
 import withNavigation from '../../navigation/consumer'
-import NavigationBar from './navbar'
-import SideBar from './sidebar'
+import AppNavigation from './appnav'
+import SideNavigation from './sidenav'
+
 import LoadingPage from './loading'
 import NotFoundPage from './notfound'
 import UserPage from './users'
@@ -61,8 +62,8 @@ class MainLayout extends Component {
 
     return(
       <div className={classes.root}>
-        <NavigationBar onToggle={this._handleSideBarToggle}/>
-        <SideBar navigation={navigation} adminNavigation={adminNavigation}
+        <AppNavigation onToggle={this._handleSideBarToggle}/>
+        <SideNavigation navigation={navigation} adminNavigation={adminNavigation}
           mobileOpen={sideBarOpen} onClose={this._handleSideBarToggle}/>
         <main className={classes.content}>
           <div className={classes.toolbar} />

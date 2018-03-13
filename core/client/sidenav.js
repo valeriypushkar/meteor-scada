@@ -14,7 +14,7 @@ import { withStyles } from 'material-ui/styles'
  * SCADA application side navigation bar.
  * @private
  */
-class SideBar extends Component {
+class SideNavigation extends Component {
   state = { expanded: {} };
 
   _handleExpand = (name) => () => {
@@ -52,7 +52,7 @@ class SideBar extends Component {
     const path = '/' + item.name;
 
     return (
-      <ListItem key={item.name} onClick={this._handleClick}
+      <ListItem key={item.name} button onClick={this._handleClick}
         component={NavLink} to={path} activeClassName={classes.selected}
       >
         <ListItemIcon>
@@ -97,7 +97,7 @@ class SideBar extends Component {
     const path = parentPath + '/' + item.name;
 
     return (
-      <ListItem key={item.name}
+      <ListItem key={item.name} button
         className={classes.submenu} onClick={this._handleClick}
         component={NavLink} to={path} activeClassName={classes.selected}
       >
@@ -139,7 +139,7 @@ class SideBar extends Component {
 }
 
 
-SideBar.propTypes = {
+SideNavigation.propTypes = {
   classes: PropTypes.object.isRequired,
   mobileOpen: PropTypes.bool,
   onClose: PropTypes.func,
@@ -169,4 +169,4 @@ const styles = theme => ({
   }
 });
 
-export default withStyles(styles)(SideBar);
+export default withStyles(styles)(SideNavigation);

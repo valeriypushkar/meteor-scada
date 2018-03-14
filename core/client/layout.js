@@ -13,6 +13,7 @@ import MeteorScada from '../common/namespace'
 import withNavigation from '../../navigation/consumer'
 import AppNavigation from './appnav'
 import SideNavigation from './sidenav'
+import TabNavigation from './tabnav'
 
 import LoadingPage from './loading'
 import NotFoundPage from './notfound'
@@ -32,15 +33,17 @@ class MainLayout extends Component {
     this.setState({ sideBarOpen: !this.state.sideBarOpen });
   }
 
-  _renderNavRoute(item, path) {
-    path = (path || '') + '/' + item.name;
+  _renderNavRoute(item, parentPath) {
+    const path = parentPath + '/' + item.name;
 
     if (!(item.children && item.children.length)) {
       return <Route key={path} path={path} exact component={item.component}/>;
     } else if (item.children[0].type === 'submenuitem') {
       return item.children.map(child => this._renderNavRoute(child, path));
     } else if (item.children[0].type === 'tabitem') {
-      return null; // TODO: implement tab item
+      return <Route key={path} path={path} exact render={props => (
+          <TabNavigation tabNavigation={item.children} />
+        )} />;
     } else {
       return null;
     }
@@ -69,8 +72,8 @@ class MainLayout extends Component {
           <div className={classes.toolbar} />
           <Switch>
             <Redirect from='/' exact to={home} />
-            {adminNavigation.flatMap(item => this._renderNavRoute(item))}
-            {navigation.flatMap(item => this._renderNavRoute(item))}
+            {adminNavigation.flatMap(item => this._renderNavRoute(item, ''))}
+            {navigation.flatMap(item => this._renderNavRoute(item, ''))}
             <Route component={ NotFoundPage } />
           </Switch>
         </main>
@@ -126,7 +129,6 @@ const styles = theme => ({
   content: {
     flexGrow: 1,
     backgroundColor: theme.palette.background.default,
-    padding: theme.spacing.unit * 2,
   },
 });
 

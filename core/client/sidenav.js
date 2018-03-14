@@ -164,7 +164,7 @@ const styles = theme => ({
     color: theme.palette.action.active,
   },
   submenu: {
-    paddingLeft: theme.spacing.unit * 4,
+    paddingLeft: theme.spacing.unit * 8,
   },
   selected: {
     background: theme.palette.action.selected,

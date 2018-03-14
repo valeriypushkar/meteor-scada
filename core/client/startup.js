@@ -2,7 +2,8 @@ import { Meteor } from 'meteor/meteor'
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom'
-import Reboot from 'material-ui/Reboot'
+
+import CssBaseline from 'material-ui/CssBaseline'
 import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles'
 
 import MeteorScada from '../common/namespace'
@@ -12,7 +13,19 @@ import MainLayout from './layout'
 // TODO: more advanced theme management in separate file
 const theme = createMuiTheme({
   palette: {
-    type: 'dark'
+    type: 'dark',
+    primary: {
+      light: '#757ce8',
+      main: '#3f50b5',
+      dark: '#002884',
+      contrastText: '#fff',
+    },
+    secondary: {
+      light: '#ff7961',
+      main: '#f44336',
+      dark: '#ba000d',
+      contrastText: '#000',
+    },
   },
 });
 
@@ -27,7 +40,7 @@ function renderMain() {
 Meteor.startup(() => {
   ReactDOM.render(
     <MuiThemeProvider theme={theme}>
-      <Reboot/>
+      <CssBaseline/>
       {MeteorScada._navigationProvider}
       <BrowserRouter>
         <Switch>

@@ -1,7 +1,7 @@
-import { Meteor } from 'meteor/meteor';
+import { Meteor } from 'meteor/meteor'
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom'
 
 import AppBar from 'material-ui/AppBar'
 import Toolbar from 'material-ui/Toolbar'
@@ -121,8 +121,10 @@ const styles = theme => ({
   separator: {
     marginLeft: 10,
     marginRight: 10,
-    borderLeft: '1px solid #5C6BC0', // FIXME: get color from theme
-    borderRight: '1px solid #303F9F', // FIXME: get color from theme
+    borderLeft: '1px solid',
+    borderLeftColor: theme.palette.primary.light,
+    borderRight: '1px solid',
+    borderRightColor: theme.palette.primary.dark,
     height: 42,
     [theme.breakpoints.down('sm')]: {
       display: 'none',

@@ -14,7 +14,7 @@ class TabNavigation extends Component {
     currentTab: 0,
   };
 
-  _handleTabChange = (event, value) => {
+  handleTabChange = (event, value) => {
     this.setState({ currentTab: value });
   };
 
@@ -30,9 +30,9 @@ class TabNavigation extends Component {
 
     return (
       <div className={classes.root}>
-        <AppBar position="static" color="default">
+        <AppBar className={classes.appBar} color="default">
           <Tabs value={currentTab} fullWidth scrollable
-            onChange={this._handleTabChange}
+            onChange={this.handleTabChange}
           >
             {tabNavigation.map(item =>
               <Tab key={item.name} label={item.title} />
@@ -53,7 +53,20 @@ TabNavigation.propTypes = {
 const styles = theme => ({
   root: {
     flexGrow: 1,
+    paddingTop: 48,
     backgroundColor: theme.palette.background.default,
+  },
+  appBar: {
+    position: 'fixed',
+    zIndex: theme.zIndex.drawer - 1,
+    height: 48,
+    top: 56,
+    [theme.breakpoints.up('sm')]: { top: 64 },
+    left: 0,
+    [theme.breakpoints.up('md')]: { left: 260 },
+  },
+  content: {
+    //paddingTop: 48,
   }
 });
 

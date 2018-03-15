@@ -93,14 +93,19 @@ AppNavigation.propTypes = {
   classes: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,
   onToggle: PropTypes.func,
+  navigation: PropTypes.array.isRequired,
+  adminNavigation: PropTypes.array.isRequired,
 };
 
 const styles = theme => ({
   appBar: {
-    position: 'absolute',
+    position: 'fixed',
     zIndex: theme.zIndex.drawer + 1,
+    height: 56,
+    [theme.breakpoints.up('sm')]: { height: 64 },
   },
   toolBar: {
+
     paddingLeft: 10,
     paddingRight: 10,
   },

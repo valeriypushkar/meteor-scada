@@ -34,19 +34,18 @@ export default class NavTabItem extends Component {
 
 NavTabItem.propTypes = {
   /**
-   * Unique name of tab item.
+   * Unique name of the tab item.
    */
   name: PropTypes.string.isRequired,
 
   /**
-   * Title of menu item.
+   * The title of the tab item.
    * This is what user sees on the screen.
    */
   title: PropTypes.string,
 
   /**
-   * Component to render when this menu item is active.
-   * Can be specified only if item doesn't have child elements.
+   * The component to render when this tab item is active.
    */
   component: PropTypes.func,
 

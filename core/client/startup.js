@@ -30,7 +30,7 @@ const theme = createMuiTheme({
 });
 
 function renderMain() {
-  if (!Meteor.loggingIn() && !Meteor.userId()) {
+  if (!Meteor.userId()) {
     return (<Redirect to="/login"/>);
   } else {
     return (<MainLayout/>);

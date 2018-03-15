@@ -29,17 +29,17 @@ class MainLayout extends Component {
     sideBarOpen: false
   };
 
-  _handleSideBarToggle = () => {
+  handleSideBarToggle = () => {
     this.setState({ sideBarOpen: !this.state.sideBarOpen });
   }
 
-  _renderNavRoute(item, parentPath) {
+  renderNavRoute(item, parentPath) {
     const path = parentPath + '/' + item.name;
 
     if (!(item.children && item.children.length)) {
       return <Route key={path} path={path} exact component={item.component}/>;
     } else if (item.children[0].type === 'submenuitem') {
-      return item.children.map(child => this._renderNavRoute(child, path));
+      return item.children.map(child => this.renderNavRoute(child, path));
     } else if (item.children[0].type === 'tabitem') {
       return <Route key={path} path={path} exact render={props => (
           <TabNavigation tabNavigation={item.children} />
@@ -49,7 +49,7 @@ class MainLayout extends Component {
     }
   }
 
-  _renderLayout() {
+  renderLayout() {
     const { classes, navigation, user } = this.props;
     const { sideBarOpen } = this.state;
 
@@ -65,27 +65,28 @@ class MainLayout extends Component {
 
     return(
       <div className={classes.root}>
-        <AppNavigation onToggle={this._handleSideBarToggle}/>
-        <SideNavigation navigation={navigation} adminNavigation={adminNavigation}
-          mobileOpen={sideBarOpen} onClose={this._handleSideBarToggle}/>
+        <AppNavigation adminNavigation={adminNavigation} navigation={navigation}
+          onToggle={this.handleSideBarToggle} />
+        <SideNavigation adminNavigation={adminNavigation} navigation={navigation}
+          mobileOpen={sideBarOpen} onClose={this.handleSideBarToggle} />
         <main className={classes.content}>
-          <div className={classes.toolbar} />
+
           <Switch>
             <Redirect from='/' exact to={home} />
-            {adminNavigation.flatMap(item => this._renderNavRoute(item, ''))}
-            {navigation.flatMap(item => this._renderNavRoute(item, ''))}
+            {adminNavigation.flatMap(item => this.renderNavRoute(item, ''))}
+            {navigation.flatMap(item => this.renderNavRoute(item, ''))}
             <Route component={ NotFoundPage } />
           </Switch>
         </main>
       </div>
     );
   }
-
+//<div className={classes.toolbar} />
   render() {
     // If navigation depends on data from server, the loading can take some time
     // We also need to wait when user info is loaded from server
     const { navigation, user } = this.props;
-    return (navigation.length && user) ? this._renderLayout() : <LoadingPage />;
+    return (navigation.length && user) ? this.renderLayout() : <LoadingPage />;
   }
 }
 
@@ -120,14 +121,16 @@ const styles = theme => ({
   root: {
     flexGrow: 1,
     zIndex: 1,
-    overflow: 'hidden',
-    position: 'relative',
     display: 'flex',
     width: '100%',
   },
   toolbar: theme.mixins.toolbar,
   content: {
     flexGrow: 1,
+    paddingLeft: 0,
+    [theme.breakpoints.up('md')]: { paddingLeft: 260 },
+    paddingTop: 56,
+    [theme.breakpoints.up('sm')]: { paddingTop: 64 },
     backgroundColor: theme.palette.background.default,
   },
 });

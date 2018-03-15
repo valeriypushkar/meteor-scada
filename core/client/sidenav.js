@@ -17,42 +17,42 @@ import { withStyles } from 'material-ui/styles'
 class SideNavigation extends Component {
   state = { expanded: {} };
 
-  _handleExpand = (name) => () => {
+  handleExpand = (name) => () => {
     const { expanded } = this.state;
     expanded[name] = !expanded[name];
     this.setState({ expanded: expanded });
   };
 
-  _handleClick = () => {
+  handleClick = () => {
     if (this.props.mobileOpen) {
       this.props.onClose();
     }
   }
 
-  _renderMenu() {
+  renderMenu() {
     const { navigation, adminNavigation } = this.props;
 
     return(
       <List component="nav">
-        {this._renderMenuItems(adminNavigation)}
+        {this.renderMenuItems(adminNavigation)}
         {adminNavigation.length && <Divider />}
-        {this._renderMenuItems(navigation)}
+        {this.renderMenuItems(navigation)}
       </List>
     );
   }
 
-  _renderMenuItems(items) {
+  renderMenuItems(items) {
     return items.map(item =>
       (item.children.length && item.children[0].type === 'submenuitem') ?
-        this._renderSubMenu(item) : this._renderMenuItem(item));
+        this.renderSubMenu(item) : this.renderMenuItem(item));
   }
 
-  _renderMenuItem(item) {
+  renderMenuItem(item) {
     const { classes } = this.props;
     const path = '/' + item.name;
 
     return (
-      <ListItem key={item.name} button onClick={this._handleClick}
+      <ListItem key={item.name} button onClick={this.handleClick}
         component={NavLink} to={path} activeClassName={classes.selected}
       >
         {item.icon &&
@@ -65,7 +65,7 @@ class SideNavigation extends Component {
     );
   }
 
-  _renderSubMenu(item) {
+  renderSubMenu(item) {
     const { classes } = this.props;
     const path = '/' + item.name;
     const expanded = this.state.expanded[item.name];
@@ -73,7 +73,7 @@ class SideNavigation extends Component {
     return (
       <React.Fragment key={item.name}>
         <Route path={path} children={({ match }) => (
-          <ListItem button onClick={this._handleExpand(item.name)}
+          <ListItem button onClick={this.handleExpand(item.name)}
             className={match && !expanded ? classes.selected : ''}
           >
             {item.icon &&
@@ -89,20 +89,20 @@ class SideNavigation extends Component {
         )} />
         <Collapse in={expanded} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
-            {item.children.map(item => this._renderSubMenuItem(item, path))}
+            {item.children.map(item => this.renderSubMenuItem(item, path))}
           </List>
         </Collapse>
       </React.Fragment>
     );
   }
 
-  _renderSubMenuItem(item, parentPath) {
+  renderSubMenuItem(item, parentPath) {
     const { classes } = this.props;
     const path = parentPath + '/' + item.name;
 
     return (
       <ListItem key={item.name} button
-        className={classes.submenu} onClick={this._handleClick}
+        className={classes.submenu} onClick={this.handleClick}
         component={NavLink} to={path} activeClassName={classes.selected}
       >
         <ListItemText primary={item.title} />
@@ -118,10 +118,9 @@ class SideNavigation extends Component {
         <Hidden smDown implementation="css">
           <Drawer
             variant="permanent" open
-            classes={{paper: classes.drawerPaper}}
+            classes={{paper: classes.drawerPerm}}
           >
-            <div className={classes.toolbar} />
-            {this._renderMenu()}
+            {this.renderMenu()}
           </Drawer>
         </Hidden>
         <Hidden mdUp>
@@ -129,11 +128,11 @@ class SideNavigation extends Component {
             variant="temporary"
             open={this.props.mobileOpen}
             onClose={this.props.onClose}
-            classes={{paper: classes.drawerPaper}}
+            classes={{paper: classes.drawerTemp}}
             ModalProps={{keepMounted: true}}
           >
             <Divider />
-            {this._renderMenu()}
+            {this.renderMenu()}
           </Drawer>
         </Hidden>
       </React.Fragment>
@@ -149,13 +148,14 @@ SideNavigation.propTypes = {
   adminNavigation: PropTypes.array.isRequired,
 };
 
-const drawerWidth = 260;
-
 const styles = theme => ({
-  toolbar: theme.mixins.toolbar,
-  drawerPaper: {
-    width: drawerWidth,
-    [theme.breakpoints.up('md')]: { position: 'relative', },
+  drawerPerm: {
+    width: 260,
+    position: 'fixed',
+    paddingTop: 64,
+  },
+  drawerTemp: {
+    width: 260,
   },
   icon: {
     margin: 0,

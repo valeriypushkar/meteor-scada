@@ -1,7 +1,7 @@
 import { Meteor } from 'meteor/meteor'
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { withRouter } from 'react-router-dom'
+import { Route, withRouter } from 'react-router-dom'
 
 import AppBar from 'material-ui/AppBar'
 import Toolbar from 'material-ui/Toolbar'
@@ -36,8 +36,53 @@ class AppNavigation extends Component {
     Meteor.logout(() => this.props.history.push('/login'));
   }
 
+  renderTitle(title, className) {
+    return (
+      <Typography className={className} variant="title" color="inherit">
+        {title}
+      </Typography>
+    );
+  }
+
+  renderSingleTitle(item) {
+    const { classes } = this.props;
+
+    return (
+      <div className={classes.title}>
+        {this.renderTitle(item.title, classes.titleMain)}
+      </div>
+    );
+  }
+
+  renderDoubleTitle(item) {
+    const { classes } = this.props;
+
+    return (
+      <div className={classes.title}>
+        {this.renderTitle(item.title, classes.titleSecondary)}
+        <Icon className={classes.titleSeparator}>navigate_next</Icon>
+        {item.children.map(child =>
+          <Route key={child.name} path={'/' + item.name + '/' + child.name}
+            render={() => this.renderTitle(child.title, classes.titleMain)} />
+        )}
+      </div>
+    );
+  }
+
+  renderTitleRoute(item) {
+    const hasChild = item.children && item.children.length !== 0 &&
+      item.children[0].type === 'submenuitem';
+
+    return (
+      <Route key={item.name} path={'/' + item.name} render={() =>
+        hasChild ? this.renderDoubleTitle(item) : this.renderSingleTitle(item)
+      } />
+    );
+  }
+
   renderAccountMenu() {
     const isOpen = Boolean(this.state.accountMenuAnchor);
+
     return (
       <Menu
         id="menu-appbar" anchorEl={this.state.accountMenuAnchor}
@@ -60,7 +105,7 @@ class AppNavigation extends Component {
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, navigation, adminNavigation } = this.props;
 
     return(
       <AppBar className={classes.appBar}>
@@ -73,9 +118,8 @@ class AppNavigation extends Component {
           </IconButton>
           <img className={classes.logo} alt="MeteorScada" src={IMG_LOGO}/>
           <div className={classes.separator} />
-          <Typography className={classes.title} variant="title" color="inherit">
-            Title
-          </Typography>
+          {adminNavigation.map(item => this.renderTitleRoute(item))}
+          {navigation.map(item => this.renderTitleRoute(item))}
           <IconButton color="inherit">
             <Icon>notifications</Icon>
           </IconButton>
@@ -137,9 +181,24 @@ const styles = theme => ({
   },
   title: {
     flex: 1,
+    display: 'flex',
+  },
+  titleMain: {
     paddingLeft: 10,
     paddingRight: 10,
   },
+  titleSecondary: {
+    paddingLeft: 10,
+    paddingRight: 10,
+    [theme.breakpoints.down('sm')]: {
+      display: 'none',
+    },
+  },
+  titleSeparator: {
+    [theme.breakpoints.down('sm')]: {
+      display: 'none',
+    },
+  }
 });
 
 export default withStyles(styles)(withRouter(AppNavigation));

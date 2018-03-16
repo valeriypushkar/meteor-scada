@@ -81,7 +81,7 @@ class MainLayout extends Component {
       </div>
     );
   }
-//<div className={classes.toolbar} />
+
   render() {
     // If navigation depends on data from server, the loading can take some time
     // We also need to wait when user info is loaded from server
@@ -124,7 +124,6 @@ const styles = theme => ({
     display: 'flex',
     width: '100%',
   },
-  toolbar: theme.mixins.toolbar,
   content: {
     flexGrow: 1,
     paddingLeft: 0,

@@ -1,7 +1,7 @@
 import { Meteor } from 'meteor/meteor'
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Route, withRouter } from 'react-router-dom'
+import { Switch, Route, withRouter } from 'react-router-dom'
 
 import AppBar from 'material-ui/AppBar'
 import Toolbar from 'material-ui/Toolbar'
@@ -46,26 +46,27 @@ class AppNavigation extends Component {
 
   renderSingleTitle(item) {
     const { classes } = this.props;
-
-    return (
-      <div className={classes.title}>
-        {this.renderTitle(item.title, classes.titleMain)}
-      </div>
-    );
+    return this.renderTitle(item.title, classes.title);
   }
 
   renderDoubleTitle(item) {
     const { classes } = this.props;
 
     return (
-      <div className={classes.title}>
-        {this.renderTitle(item.title, classes.titleSecondary)}
-        <Icon className={classes.titleSeparator}>navigate_next</Icon>
+      <Switch>
         {item.children.map(child =>
           <Route key={child.name} path={'/' + item.name + '/' + child.name}
-            render={() => this.renderTitle(child.title, classes.titleMain)} />
+            render={() =>
+              <React.Fragment>
+                {this.renderTitle(item.title, classes.titleSecondary)}
+                <Icon className={classes.titleSeparator}>navigate_next</Icon>
+                {this.renderTitle(child.title, classes.title)}
+              </React.Fragment>
+            }
+          />
         )}
-      </div>
+        <Route render={() => this.renderTitle('Not found', classes.title)} />
+      </Switch>
     );
   }
 
@@ -118,8 +119,11 @@ class AppNavigation extends Component {
           </IconButton>
           <img className={classes.logo} alt="MeteorScada" src={IMG_LOGO}/>
           <div className={classes.separator} />
-          {adminNavigation.map(item => this.renderTitleRoute(item))}
-          {navigation.map(item => this.renderTitleRoute(item))}
+          <Switch>
+            {adminNavigation.map(item => this.renderTitleRoute(item))}
+            {navigation.map(item => this.renderTitleRoute(item))}
+            <Route render={() => this.renderTitle('Not found', classes.title)} />
+          </Switch>
           <IconButton color="inherit">
             <Icon>notifications</Icon>
           </IconButton>
@@ -149,7 +153,6 @@ const styles = theme => ({
     [theme.breakpoints.up('sm')]: { height: 64 },
   },
   toolBar: {
-
     paddingLeft: 10,
     paddingRight: 10,
   },
@@ -161,11 +164,11 @@ const styles = theme => ({
     },
   },
   logo: {
+    paddingLeft: 10,
+    paddingRight: 10,
     [theme.breakpoints.down('sm')]: {
       display: 'none',
     },
-    paddingLeft: 10,
-    paddingRight: 10,
   },
   separator: {
     marginLeft: 10,
@@ -181,9 +184,6 @@ const styles = theme => ({
   },
   title: {
     flex: 1,
-    display: 'flex',
-  },
-  titleMain: {
     paddingLeft: 10,
     paddingRight: 10,
   },

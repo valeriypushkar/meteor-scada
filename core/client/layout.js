@@ -14,11 +14,10 @@ import withNavigation from '../../navigation/consumer'
 import AppNavigation from './appnav'
 import SideNavigation from './sidenav'
 import TabNavigation from './tabnav'
-
-import LoadingPage from './loading'
-import NotFoundPage from './notfound'
 import UserPage from './users'
 import DevicePage from './devices'
+import LoadingPage from '../../utils/client/loading'
+import NotFoundPage from '../../utils/client/notfound'
 
 /**
  * Main layout of the SCADA application.
@@ -70,7 +69,6 @@ class MainLayout extends Component {
         <SideNavigation adminNavigation={adminNavigation} navigation={navigation}
           mobileOpen={sideBarOpen} onClose={this.handleSideBarToggle} />
         <main className={classes.content}>
-
           <Switch>
             <Redirect from='/' exact to={home} />
             {adminNavigation.flatMap(item => this.renderNavRoute(item, ''))}

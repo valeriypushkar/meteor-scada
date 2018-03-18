@@ -3,6 +3,8 @@ import Adapter from 'enzyme-adapter-react-16';
 
 configure({ adapter: new Adapter() });
 
+require('./data/common/datatypes.test')
+
 require('./navigation/store.test')
 require('./navigation/provider.test')
 require('./navigation/consumer.test')

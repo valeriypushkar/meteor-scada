@@ -1,7 +1,7 @@
 import { expect } from 'chai'
 
 import DataTypes from './datatypes'
-import NumberType from './number'
+import NumberType from './types/number'
 
 describe('data.types', function() {
 

@@ -1,11 +1,13 @@
 import { Meteor } from 'meteor/meteor'
-import AbstractData from './abstract'
+
+import MeteorScada from '../../core/common/namespace'
+import AbstractData from '../common/abstract'
 
 /**
  * Defines a runtime data entity on the server.
  * @private
  */
-export default class RuntimeData extends AbstractData {
+class RuntimeData extends AbstractData {
   /**
    * Constructor
    * @param {string} name name of the data entity
@@ -16,3 +18,7 @@ export default class RuntimeData extends AbstractData {
 
   }
 }
+
+// Save server implementation of RuntimeData in namespace
+// so common code can use it
+MeteorScada.impl.RuntimeData = RuntimeData;

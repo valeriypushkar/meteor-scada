@@ -1,4 +1,4 @@
-import MeteorScada from '../core/common/namespace'
+import MeteorScada from '../../core/common/namespace'
 import NumberType from './types/number'
 import ObjectData from './object'
 

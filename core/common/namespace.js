@@ -3,4 +3,6 @@
 * @namespace
 * @public
 */
-export default MeteorScada = {}
+export default MeteorScada = {
+  _impl: {}
+}

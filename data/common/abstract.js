@@ -13,4 +13,11 @@ export default class AbstractData {
   constructor(name) {
     this._name = name;
   }
+
+  /**
+   * Unique name of data entity.
+   */
+  get name() {
+    return this._name;
+  }
 }

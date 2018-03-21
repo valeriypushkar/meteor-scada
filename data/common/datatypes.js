@@ -7,19 +7,19 @@ import ObjectData from './object'
  * @public
  */
 export default class DataTypes {
-  /** Defince boolean type */
+  /** Define boolean type */
   static get bool() {return null;} // TODO: implement boolean
 
   /** Define number type */
   static get number() {return new NumberType();}
 
-  /** Defince string type */
+  /** Define string type */
   static get string() {return null;} // TODO: implement string
 
-  /** Defince object` type */
+  /** Define object type */
   static get object() {return null;} // TODO: implement object
 
-  /** Defince array type */
+  /** Define array type */
   static get array() {return null;} // TODO: implement array
 }
 

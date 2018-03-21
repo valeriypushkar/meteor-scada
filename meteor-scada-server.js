@@ -1,4 +1,5 @@
 import './core/server/users'
-import './data/server/runtime'
 
 export MeteorScada from './core/common/namespace'
+
+export { default as observeData } from './data/server/observer'

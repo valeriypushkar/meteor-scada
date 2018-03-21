@@ -1,24 +1,23 @@
 import { Meteor } from 'meteor/meteor'
 
-import MeteorScada from '../../core/common/namespace'
-import AbstractData from '../common/abstract'
+import RuntimeData from '../common/runtime'
 
 /**
  * Defines a runtime data entity on the server.
  * @private
  */
-class RuntimeData extends AbstractData {
-  /**
-   * Constructor
-   * @param {string} name name of the data entity
-   * @param {object} type object represents data type
-   */
+class RuntimeDataServer extends RuntimeData {
   constructor(name, type) {
-    super(name);
-
+    super(name, type);
   }
+
+
 }
 
-// Save server implementation of RuntimeData in namespace
-// so common code can use it
-MeteorScada.impl.RuntimeData = RuntimeData;
+// Save server implementation of RuntimeData so common code can use it
+RuntimeData.impl = RuntimeDataServer;
+
+//------------------------------------------------------------------------------
+// All runtime data is cached on the server.
+// Since runtime data is hardly used on the server it is better
+// to have a single DB observer and cache all data in memory.

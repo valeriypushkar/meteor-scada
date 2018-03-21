@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor'
 
 import MeteorScada from '../../core/common/namespace'
 import AbstractData from './abstract'
+import RuntimeData from './runtime'
 import NumberType from './types/number'
 
 /**
@@ -28,7 +29,7 @@ export default class ObjectData extends AbstractData {
       const childName = name ? (name + '.' + key) : key;
 
       if (value instanceof NumberType) {
-        this[key] = new MeteorScada._impl.RuntimeData(childName, value);
+        this[key] = new RuntimeData.impl(childName, value);
       } else if (typeof value === "object" && !Array.isArray(value)) {
         this[key] = new ObjectData(childName, value);
       }

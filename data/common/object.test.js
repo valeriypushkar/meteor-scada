@@ -1,16 +1,23 @@
 import { Meteor } from 'meteor/meteor'
 import { expect } from 'chai'
 
-import MeteorScada from '../../core/common/namespace'
 import DataTypes from './datatypes'
-import AbstractData from './abstract'
+import RuntimeData from './runtime'
 import ObjectData from './object'
 
-// Create mock for RuntimeData class
-class RuntimeData extends AbstractData {}
-MeteorScada._impl.RuntimeData = RuntimeData;
 
 describe('data.object', function() {
+  const saveRuntimeDataImpl = RuntimeData.impl;
+
+  before(function() {
+    // Create mock for RuntimeData class
+    class RuntimeDataMock extends RuntimeData {}
+    RuntimeData.impl = RuntimeDataMock;
+  });
+
+  after(function() {
+    RuntimeData.impl = saveRuntimeDataImpl;
+  });
 
   it('Generate name of child data entities', function() {
     const obj = new ObjectData('root', {

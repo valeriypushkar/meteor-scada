@@ -1,12 +1,14 @@
 import { Meteor } from 'meteor/meteor'
+import SimpleType from './simple'
 
 /**
  * Boolean data type.
  * @public
  */
-export default class BoolType {
+export default class BoolType extends SimpleType {
   constructor() {
-    this._default = false;
+    super();
+    this._default = null;
   }
 
   /**
@@ -15,8 +17,8 @@ export default class BoolType {
    * @return boolean type instance
    */
   default(value) {
-    if (typeof value !== 'boolean') {
-      throw new Meteor.Error('Default value of BoolType should be a boolean');
+    if (!this._validate(value)) {
+      throw new Meteor.Error('Provided default boolean value is not valid');
     }
 
     this._default = value;
@@ -24,19 +26,19 @@ export default class BoolType {
   }
 
   /**
+   * Get default value
+   * @return {boolean} the default value for this data type
+   */
+  _initialize() {
+    return this._default;
+  }
+
+  /**
    * Validate.
    * @param {boolean} value - value to validate
    * @return {boolean} true if value is valid
    */
-  isValid(value) {
+  _validate(value) {
     return (typeof value === 'boolean');
-  }
-
-  /**
-   * Get default value
-   * @return {boolean} the default value for this data type
-   */
-  getDefault() {
-    return this._default;
   }
 }

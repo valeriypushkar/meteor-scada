@@ -1,15 +1,16 @@
 import { Meteor } from 'meteor/meteor'
+import SimpleType from './simple'
 
 /**
  * Number data type.
  * @public
  */
-export default class NumberType {
+export default class NumberType extends SimpleType {
   constructor() {
-    // No min/max values by default
+    super();
     this._min = null;
     this._max = null;
-    this._default = 0;
+    this._default = null;
   }
 
   /**
@@ -46,8 +47,8 @@ export default class NumberType {
    * @return number type instance
    */
   default(value) {
-    if (typeof value !== 'number') {
-      throw new Meteor.Error('Default value of NumberType should be a number');
+    if (!this._validate(value)) {
+      throw new Meteor.Error('Provided default number value is not valid');
     }
 
     this._default = value;
@@ -55,20 +56,23 @@ export default class NumberType {
   }
 
   /**
+   * Get default value
+   * @return {number} the default value for this data type
+   */
+  _initialize() {
+    return this._default;
+  }
+
+  /**
    * Validate.
    * @param {number} value - value to validate
    * @return {boolean} true if value is valid
    */
-  isValid(value) {
+  _validate(value) {
     return (typeof value === 'number') &&
-      (value >= this._min) && (value <= this._max);
+      (this._min == null || value >= this._min) &&
+      (this._max == null || value <= this._max);
   }
 
-  /**
-   * Get default value
-   * @return {number} the default value for this data type
-   */
-  getDefault() {
-    return this._default;
-  }
+
 }

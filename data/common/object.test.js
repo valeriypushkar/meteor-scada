@@ -48,7 +48,7 @@ describe('data.object', function() {
       childNumber: DataTypes.number,
       childString: DataTypes.string,
       childObject: DataTypes.number, // FIXME: DataTypes.object
-      childArray: DataTypes.number, // FIXME: DataTypes.array
+      childArray: DataTypes.array,
     });
 
     expect(obj.childBool).to.be.an.instanceof(RuntimeData);

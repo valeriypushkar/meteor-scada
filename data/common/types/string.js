@@ -1,12 +1,14 @@
 import { Meteor } from 'meteor/meteor'
+import SimpleType from './simple'
 
 /**
  * String data type.
  * @public
  */
-export default class StringType {
+export default class StringType extends SimpleType {
   constructor() {
-    this._default = "";
+    super();
+    this._default = null;
   }
 
   /**
@@ -15,8 +17,8 @@ export default class StringType {
    * @return string type instance
    */
   default(value) {
-    if (typeof value !== 'string') {
-      throw new Meteor.Error('Default value of StringType should be a string');
+    if (!this._validate(value)) {
+      throw new Meteor.Error('Provided default string value is not valid');
     }
 
     this._default = value;
@@ -24,19 +26,19 @@ export default class StringType {
   }
 
   /**
+   * Get default value
+   * @return {string} the default value for this data type
+   */
+  _initialize() {
+    return this._default;
+  }
+
+  /**
    * Validate.
    * @param {string} value - value to validate
    * @return {boolean} true if value is valid
    */
-  isValid(value) {
-    return (typeof value === 'string');
-  }
-
-  /**
-   * Get default value
-   * @return {string} the default value for this data type
-   */
-  getDefault() {
-    return this._default;
+  _validate(value) {
+    return (typeof value === 'string' || value instanceof String);
   }
 }

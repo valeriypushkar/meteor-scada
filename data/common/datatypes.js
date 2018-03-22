@@ -2,6 +2,7 @@ import MeteorScada from '../../core/common/namespace'
 import BoolType from './types/bool'
 import NumberType from './types/number'
 import StringType from './types/string'
+import ArrayType from './types/array'
 import ObjectData from './object'
 
 /**
@@ -22,7 +23,7 @@ export default class DataTypes {
   static get object() {return null;} // TODO: implement object
 
   /** Define array type */
-  static get array() {return null;} // TODO: implement array
+  static get array() {return new ArrayType();}
 }
 
 /**

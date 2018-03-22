@@ -44,9 +44,9 @@ describe('data.object', function() {
 
   it('Create RuntimeData entities', function() {
     const obj = new ObjectData('root', {
-      childBool: DataTypes.number, // FIXME: DataTypes.bool
+      childBool: DataTypes.bool,
       childNumber: DataTypes.number,
-      childString: DataTypes.number, // FIXME: DataTypes.string
+      childString: DataTypes.string,
       childObject: DataTypes.number, // FIXME: DataTypes.object
       childArray: DataTypes.number, // FIXME: DataTypes.array
     });

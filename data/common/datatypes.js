@@ -1,5 +1,7 @@
 import MeteorScada from '../../core/common/namespace'
+import BoolType from './types/bool'
 import NumberType from './types/number'
+import StringType from './types/string'
 import ObjectData from './object'
 
 /**
@@ -8,13 +10,13 @@ import ObjectData from './object'
  */
 export default class DataTypes {
   /** Define boolean type */
-  static get bool() {return null;} // TODO: implement boolean
+  static get bool() {return new BoolType();}
 
   /** Define number type */
   static get number() {return new NumberType();}
 
   /** Define string type */
-  static get string() {return null;} // TODO: implement string
+  static get string() {return new StringType();}
 
   /** Define object type */
   static get object() {return null;} // TODO: implement object

@@ -3,7 +3,9 @@ import { Meteor } from 'meteor/meteor'
 import MeteorScada from '../../core/common/namespace'
 import AbstractData from './abstract'
 import RuntimeData from './runtime'
+import BoolType from './types/bool'
 import NumberType from './types/number'
+import StringType from './types/string'
 
 /**
  * Defines an object to keep data entities.
@@ -28,7 +30,8 @@ export default class ObjectData extends AbstractData {
       const value = config[key];
       const childName = name ? (name + '.' + key) : key;
 
-      if (value instanceof NumberType) {
+      if ((value instanceof BoolType) || (value instanceof NumberType) ||
+        (value instanceof StringType)) {
         this[key] = new RuntimeData.impl(childName, value);
       } else if (typeof value === "object" && !Array.isArray(value)) {
         this[key] = new ObjectData(childName, value);

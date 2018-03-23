@@ -40,8 +40,8 @@ export class DataDependency {
  */
 export class DataObserver {
   constructor(func) {
-    if (typeof func !== "function") {
-      throw new Meteor.Error("Parameter is not a function");
+    if (typeof func !== 'function') {
+      throw new Meteor.Error('Parameter is not a function');
     }
 
     this._id = nextId++;
@@ -111,7 +111,7 @@ export class DataObserver {
  * Runs function that is provided a parameter and remembers which data is used.
  * When some of data is changed re-runs the function.
  * @param {function} func function that uses data
- * @return TBD: id or object to stop observer
+ * @return observer object
  */
 export default function observeData(func) {
   return new DataObserver(func);

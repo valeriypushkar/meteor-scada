@@ -117,7 +117,7 @@ Meteor.publish(RuntimeData.publication, (names) => {
 
   // Make sure the user is logged in before publishing
   if (!Roles.userIsInRole( Meteor.userId(), 'guest' )) {
-    console.log("User is not authorized to get data");
+    console.warn("User is not authorized");
     throw new Meteor.Error('User is not authorized');
   }
 

@@ -7,9 +7,11 @@ import ObjectData from './object'
 
 
 describe('data.object', function() {
-  const saveRuntimeDataImpl = RuntimeData.impl;
+  var saveRuntimeDataImpl;
 
   before(function() {
+    saveRuntimeDataImpl = RuntimeData.impl;
+
     // Create mock for RuntimeData class
     class RuntimeDataMock extends RuntimeData {}
     RuntimeData.impl = RuntimeDataMock;

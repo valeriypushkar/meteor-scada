@@ -55,6 +55,8 @@ Package.onTest(function(api) {
   // Do not use meteor-scada itself.
   // It's more an application than a package so needs to be tested similary.
   api.use('ecmascript@0.10.5');
+  api.use('mongo@1.4.4');
+  api.use('alanning:roles@1.2.16');
   api.use('meteortesting:mocha');
   api.mainModule('meteor-scada-client.test.js', 'client');
   api.mainModule('meteor-scada-server.test.js', 'server');

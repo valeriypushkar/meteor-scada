@@ -4,98 +4,80 @@ import { Roles } from 'meteor/alanning:roles'
 
 import RuntimeData from '../common/runtime'
 import { DataDependency } from './observer'
+import { shallowEqual } from '../../utils/common/equal'
 
 /**
  * Defines a runtime data entity on the server.
+ * All runtime data on server is cached in memory.
+ * Since runtime data is hardly used on the server it is more optimal
+ * to have a single DB observer and cache all data in memory.
  * @private
  */
 class RuntimeDataServer extends RuntimeData {
   constructor(name, type) {
     super(name, type);
-    addCacheItem(name);
+
+    // undefined means we haven't read data from DB yet
+    // null means read was done and value is null (no need of another read)
+    this._value = undefined;
+    this._depend = new DataDependency();
+
+    RuntimeDataServer.map.set(name, this);
   }
 
   get() {
-    return getCachedValue(this.name, true);
+    this._depend.depend();
+    return this.justGet();
   }
 
   justGet() {
-    return getCachedValue(this.name);
+    if (this._value === undefined) {
+      // This value has not been read from DB yet. Do it now
+      const doc = RuntimeData.collection.findOne({name: name});
+
+      if (doc && doc.value !== undefined) {
+        this._value = doc.value;
+      } else {
+        // We don't find anything so set value to default
+        // Since it's not undefined anymore we will not do another search
+        // The value will be updated automatically by DB observer
+        this._value = this._type._initialize();
+      }
+    }
+
+    return this._value;
   }
 
   set(value) {
-    RuntimeData.collection.update({ name: this.name },
-      { $set: {value: value} }, {upsert: true});
+    if (!this._type._validate(value)) {
+      console.error('Value provided for ' + this._name + ' is not valid.');
+      return;
+    }
 
-    // Do not send notify. It will be done by DB observer
-    updateCacheItem({name: this.name, value: value});
+    if (shallowEqual(this._value, value)) {
+      return;
+    }
+
+    this._value = value;
+    RuntimeData.collection.update({ name: this._name },
+      { $set: { value: value } }, { upsert: true });
+
+    this._depend.changed();
+  }
+
+  _updateCache(doc) {
+    if (!shallowEqual(this._value, doc.value)) {
+      this._value = doc.value;
+      this._depend.changed();
+    }
   }
 }
+
+// Map runtime data name to the object
+RuntimeDataServer.map = new Map();
 
 // Save server implementation of RuntimeData so common code can use it
 RuntimeData.impl = RuntimeDataServer;
-
-//------------------------------------------------------------------------------
-// All runtime data is cached on the server.
-// Since runtime data is hardly used on the server it is better
-// to have a single DB observer and cache all data in memory.
-
-const runtimeCache = new Map();
-
-function addCacheItem(name) {
-  if (runtimeCache.has(name)) {
-    throw new Meteor.Error("RuntimeData with given name already exists");
-  }
-
-  runtimeCache.set(name, {
-    // undefined means we haven't read data from DB yet
-    // null means read was done and value is null (no need of another read)
-    value: undefined,
-    depend: new DataDependency
-  });
-}
-
-function getCachedValue(name, notify) {
-  const item = runtimeCache.get(name);
-  if (!item) {
-    throw new Meteor.Error("RuntimeData with given name doesn't exist");
-  }
-
-  if (notify) {
-    item.depend.depend();
-  }
-
-  if (item.value === undefined) {
-    // This value has not been read from DB yet. Do it now
-    const doc = RuntimeData.collection.findOne({name: name});
-
-    if (doc && doc.value !== undefined) {
-      item.value = doc.value;
-    } else {
-      // We don't find anything so set value to null
-      // Since it's not undefined anymore we will not do another search
-      // The value will be updated automatically by DB observer
-      // TODO: implement default value
-      item.value = null;
-    }
-  }
-
-  return item.value;
-}
-
-function updateCacheItem(doc, notify) {
-  const item = runtimeCache.get(doc.name);
-  if (!item) return;
-
-  // We don't check that value has beed changed. We trust DB observer.
-  // FIXME: this needs to be changed. this method used not only by DB observer
-  item.value = doc.value;
-
-  if (notify) {
-    // Notify data obeserver that this value has been changed
-    item.depend.changed();
-  }
-}
 
 //------------------------------------------------------------------------------
 
@@ -106,9 +88,16 @@ function updateCacheItem(doc, notify) {
 RuntimeData.collection.rawCollection().createIndex({"name": 1});
 
 // Configure run-time data observer
+function updateCacheItem(doc) {
+  const rtdata = RuntimeDataServer.map.get(doc.name);
+  if (rtdata) {
+    rtdata._updateCache(doc);
+  }
+}
+
 RuntimeData.collection.find({}).observe({
-  added: (doc) => updateCacheItem(doc, true),
-  changed: (newDoc, oldDoc) => updateCacheItem(newDoc, true)
+  added: updateCacheItem,
+  changed: updateCacheItem
 });
 
 // Publish run-time data subscription to the client
@@ -117,7 +106,6 @@ Meteor.publish(RuntimeData.publication, (names) => {
 
   // Make sure the user is logged in before publishing
   if (!Roles.userIsInRole( Meteor.userId(), 'guest' )) {
-    console.warn("User is not authorized");
     throw new Meteor.Error('User is not authorized');
   }
 

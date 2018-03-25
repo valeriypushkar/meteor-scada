@@ -2,7 +2,7 @@ import { Meteor } from 'meteor/meteor'
 import Fiber from 'fibers'
 
 import MeteorScada from '../../core/common/namespace'
-import RuntimeDataServer from './runtime'
+import './runtime'
 
 // Id generator for DataObservers
 var nextId = 1;

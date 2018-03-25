@@ -30,7 +30,7 @@ export default class RuntimeData extends AbstractData {
    * on client forces method to re-run if data is changed.
    */
   get() {
-    throw new Meteor.Error("Server of Client implementation needs to be used");
+    throw new Meteor.Error("Server or Client implementation needs to be used");
   }
 
   /**
@@ -39,14 +39,14 @@ export default class RuntimeData extends AbstractData {
    * Available only on server-side.
    */
   justGet() {
-    throw new Meteor.Error("Server of Client implementation needs to be used");
+    throw new Meteor.Error("Server or Client implementation needs to be used");
   }
 
   /**
    * Set run-time data value.
    */
   set(value) {
-    throw new Meteor.Error("Server of Client implementation needs to be used");
+    throw new Meteor.Error("Server or Client implementation needs to be used");
   }
 }
 

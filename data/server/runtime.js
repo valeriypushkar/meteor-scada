@@ -33,7 +33,7 @@ class RuntimeDataServer extends RuntimeData {
   justGet() {
     if (this._value === undefined) {
       // This value has not been read from DB yet. Do it now
-      const doc = RuntimeData.collection.findOne({name: name});
+      const doc = RuntimeData.collection.findOne({name: this._name});
 
       if (doc && doc.value !== undefined) {
         this._value = doc.value;
@@ -58,10 +58,10 @@ class RuntimeDataServer extends RuntimeData {
       return;
     }
 
-    this._value = value;
     RuntimeData.collection.update({ name: this._name },
-      { $set: { value: value } }, { upsert: true });
+      { $set: { value } }, { upsert: true });
 
+    this._value = value;
     this._depend.changed();
   }
 

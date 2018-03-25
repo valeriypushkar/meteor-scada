@@ -20,6 +20,7 @@ class RuntimeDataServer extends RuntimeData {
     // undefined means we haven't read data from DB yet
     // null means read was done and value is null (no need of another read)
     this._value = undefined;
+    this._generation = 0;
     this._depend = new DataDependency();
 
     RuntimeDataServer.map.set(name, this);
@@ -35,9 +36,13 @@ class RuntimeDataServer extends RuntimeData {
       // This value has not been read from DB yet. Do it now
       const doc = RuntimeData.collection.findOne({name: this._name});
 
-      if (doc && doc.value !== undefined) {
+      if (doc) {
         this._value = doc.value;
-      } else {
+        this._generation = doc.generation;
+      } else if (this._value === undefined) {
+        // While we were waiting result from DB the value can be updated
+        // So check undefined once again
+
         // We don't find anything so set value to default
         // Since it's not undefined anymore we will not do another search
         // The value will be updated automatically by DB observer
@@ -58,16 +63,21 @@ class RuntimeDataServer extends RuntimeData {
       return;
     }
 
-    RuntimeData.collection.update({ name: this._name },
-      { $set: { value } }, { upsert: true });
-
     this._value = value;
+    this._generation++;
+
+    RuntimeData.collection.update({ name: this._name },
+      { $set: { value, generation: this._generation } }, { upsert: true }
+    );
+
     this._depend.changed();
   }
 
   _updateCache(doc) {
-    if (!shallowEqual(this._value, doc.value)) {
+    if (doc.generation > this._generation || (doc.generation === this._generation
+      && !shallowEqual(this._value, doc.value))) {
       this._value = doc.value;
+      this._generation = doc.generation;
       this._depend.changed();
     }
   }

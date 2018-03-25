@@ -59,7 +59,12 @@ export class DataObserver {
   }
 
   wakeup() {
-    this._yielding ? this._fiber.run() : this._wakeup = true;
+    if (this._yielding) {
+      Meteor._setImmediate(() => this._fiber.run());
+      this._yielding = false;
+    } else {
+      this._wakeup = true;
+    }
   }
 
   stop() {

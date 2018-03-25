@@ -56,17 +56,20 @@ describe('data.server.runtime', function() {
     const rtd = new RuntimeData.impl('test.name', DataTypes.number);
     expect(rtd.get()).to.equal(22);
 
+    const saveConsoleError = console.error;
+
+    console.error = () => {};
     rtd.set('string');
     expect(rtd.get()).to.equal(22);
 
-    const saveConsoleError = console.error;
     console.error = (text) => {throw new Error(text)};
     expect(() => rtd.set(true)).to.throw();
+
     console.error = saveConsoleError;
   });
 
   it('Update cache on DB changes', function(done) {
-    RuntimeData.collection.insert({ name: 'test.name', value: 22 });
+    RuntimeData.collection.insert({ name: 'test.name', value: 22, generation: 1 });
     const rtd = new RuntimeData.impl('test.name', DataTypes.number);
     expect(rtd.get()).to.equal(22);
 
@@ -79,6 +82,6 @@ describe('data.server.runtime', function() {
     }
 
     RuntimeData.collection.update({ name: 'test.name' },
-      { $set: { value: 44 } }, { upsert: true });
+      { $set: { value: 44, generation: 2 } }, { upsert: true });
   });
 });

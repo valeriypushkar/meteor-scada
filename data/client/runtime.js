@@ -25,9 +25,9 @@ class RuntimeDataClient extends RuntimeData {
     Tracker.currentComputation._runtime_list.add(this._name);
 
     // Try to find data in collection. If subscription is ready we will get it.
-    // If there is no data in collection => undefined
+    // If there is no data in collection => default value
     const doc = RuntimeData.collection.findOne({name: this._name});
-    return doc ? doc.value : undefined;
+    return doc ? doc.value : this._type._initialize();
   }
 
   justGet() {

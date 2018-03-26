@@ -89,7 +89,7 @@ export class DataObserver extends React.PureComponent {
 export function withData(dataFunc, WrappedComponent) {
   return (
     class DataObserverImpl extends DataObserver {
-      getData(props) {
+      _getData(props) {
         return dataFunc(props);
       }
 
@@ -106,10 +106,10 @@ export function withData(dataFunc, WrappedComponent) {
  * @param {function} dataFunc function returns props for the wrapped component
  * @param {React.Component} WrappedComponent component to be wrapped
  */
-export function withDataOrNull(dataFunc, WrappedComponent) {
+export function withDataOnly(dataFunc, WrappedComponent) {
   return (
     class DataObserverImpl extends DataObserver {
-      getData(props) {
+      _getData(props) {
         return dataFunc(props);
       }
 
@@ -127,10 +127,10 @@ export function withDataOrNull(dataFunc, WrappedComponent) {
  * @param {function} dataFunc function returns props for the wrapped component
  * @param {React.Component} WrappedComponent component to be wrapped
  */
-export function withDataOrProgress(dataFunc, WrappedComponent) {
+export function withDataLoader(dataFunc, WrappedComponent) {
   return (
     class DataObserverImpl extends DataObserver {
-      getData(props) {
+      _getData(props) {
         return dataFunc(props);
       }
 
@@ -144,5 +144,5 @@ export function withDataOrProgress(dataFunc, WrappedComponent) {
 }
 
 MeteorScada.withData = withData;
-MeteorScada.withDataOrNull = withDataOrNull;
-MeteorScada.withDataOrProgress = withDataOrProgress;
+MeteorScada.withDataOnly = withDataOnly;
+MeteorScada.withDataLoader = withDataLoader;

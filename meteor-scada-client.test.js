@@ -7,6 +7,7 @@ require('./data/common/datatypes.test')
 require('./data/common/object.test')
 
 require('./data/client/runtime.test')
+require('./data/client/observer.test')
 
 require('./navigation/store.test')
 require('./navigation/provider.test')

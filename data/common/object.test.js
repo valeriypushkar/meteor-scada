@@ -13,7 +13,21 @@ describe('data.object', function() {
     saveRuntimeDataImpl = RuntimeData.impl;
 
     // Create mock for RuntimeData class
-    class RuntimeDataMock extends RuntimeData {}
+    class RuntimeDataMock extends RuntimeData {
+      constructor(name, type) {
+        super(name, type);
+        this._value = null;
+      }
+
+      get() {
+        return this._value;
+      }
+
+      set(value) {
+        this._value = value;
+      }
+    }
+
     RuntimeData.impl = RuntimeDataMock;
   });
 
@@ -93,6 +107,64 @@ describe('data.object', function() {
     expect(obj.child2).to.be.undefined;
     expect(obj.child3).to.be.undefined;
     expect(obj.child4).to.be.undefined;
+  });
+
+  it('Get object values', function() {
+    const obj = new ObjectData('root', {
+      value1: DataTypes.number,
+      value2: DataTypes.number,
+      object1: {
+        child1: DataTypes.number,
+        object2: {
+          child2: DataTypes.number
+        }
+      }
+    });
+
+    obj.value1.set(10);
+    obj.value2.set(100);
+    obj.object1.child1.set(500);
+    obj.object1.object2.child2.set(1000);
+
+    expect(obj.get()).to.eql({
+      value1: 10,
+      value2: 100,
+      object1: {
+        child1: 500,
+        object2: {
+          child2: 1000
+        }
+      }
+    });
+  });
+
+  it('Set object values', function() {
+    const obj = new ObjectData('root', {
+      value1: DataTypes.number,
+      value2: DataTypes.number,
+      object1: {
+        child1: DataTypes.number,
+        object2: {
+          child2: DataTypes.number
+        }
+      }
+    });
+
+    obj.set({
+      value1: 10,
+      value2: 100,
+      object1: {
+        child1: 500,
+        object2: {
+          child2: 1000
+        }
+      }
+    });
+
+    expect(obj.value1.get()).to.equal(10);
+    expect(obj.value2.get()).to.equal(100);
+    expect(obj.object1.child1.get()).to.equal(500);
+    expect(obj.object1.object2.child2.get()).to.equal(1000);
   });
 
 });

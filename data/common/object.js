@@ -35,4 +35,33 @@ export default class ObjectData extends AbstractData {
       }
     }
   }
+
+  /**
+   * Get object data values.
+   * This is reactive version of function. Being run inside
+   * MeteorScada.observeData() on server or MeteorScada.withData()
+   * on client forces method to re-run if data is changed.
+   */
+  get() {
+    const result = {};
+
+    for (var key in this) {
+      if (this.hasOwnProperty(key) && this[key] instanceof AbstractData) {
+        result[key] = this[key].get();
+      }
+    }
+
+    return result;
+  }
+
+  /**
+   * Set object data values.
+   */
+  set(value) {
+    for (var key in value) {
+      if (this.hasOwnProperty(key) && this[key] instanceof AbstractData) {
+        this[key].set(value[key]);
+      }
+    }
+  }
 }

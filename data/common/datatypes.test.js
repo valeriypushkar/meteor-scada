@@ -4,6 +4,7 @@ import DataTypes from './datatypes'
 import BoolType from './types/bool'
 import NumberType from './types/number'
 import StringType from './types/string'
+import DateType from './types/date'
 import ArrayType from './types/array'
 import ObjectType from './types/object'
 
@@ -72,6 +73,24 @@ describe('data.types', function() {
     const typeDef = DataTypes.string.default('default string');
     expect(typeDef).to.be.an.instanceof(StringType);
     expect(typeDef._initialize()).to.equal('default string');
+  });
+
+  it('DataTypes.date configuration', function() {
+    const type = DataTypes.date;
+    expect(type).to.be.an.instanceof(DateType);
+    expect(type._initialize()).to.be.null;
+    expect(type._validate(new Date())).to.be.true;
+    expect(type._validate(new Date('1995-12-17T03:24:00'))).to.be.true;
+    expect(type._validate('string')).to.be.false;
+    expect(type._validate(10)).to.be.false;
+    expect(type._validate({})).to.be.false;
+    expect(type._validate(null)).to.be.false;
+    expect(type._validate(undefined)).to.be.false;
+
+    const typeDef = DataTypes.date.default(new Date('1995-12-17T03:24:00'));
+    expect(typeDef).to.be.an.instanceof(DateType);
+    const date = new Date('1995-12-17T03:24:00')
+    expect(typeDef._initialize().valueOf()).to.equal(date.valueOf());
   });
 
   it('DataTypes.array configuration', function() {

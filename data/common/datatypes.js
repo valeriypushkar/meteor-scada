@@ -2,6 +2,7 @@ import MeteorScada from '../../core/common/namespace'
 import BoolType from './types/bool'
 import NumberType from './types/number'
 import StringType from './types/string'
+import DateType from './types/date'
 import ArrayType from './types/array'
 import ObjectType from './types/object'
 import ObjectData from './object'
@@ -19,6 +20,9 @@ export default class DataTypes {
 
   /** Define string type */
   static get string() {return new StringType();}
+
+  /** Define date type */
+  static get date() {return new DateType();}
 
   /** Define object type */
   static get object() {return new ObjectType();}
@@ -52,7 +56,7 @@ export function configureData(dataConf) {
  */
 export function getData() {
   if (!MeteorScada._data) {
-    throw new Meteor.Error('Data configuration has been provided.');
+    throw new Meteor.Error('Data configuration has not been provided.');
   }
 
   return MeteorScada._data;

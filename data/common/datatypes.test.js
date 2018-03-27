@@ -5,6 +5,7 @@ import BoolType from './types/bool'
 import NumberType from './types/number'
 import StringType from './types/string'
 import ArrayType from './types/array'
+import ObjectType from './types/object'
 
 describe('data.types', function() {
 
@@ -92,6 +93,34 @@ describe('data.types', function() {
     expect(typeNum._validate([])).to.be.true;
     expect(typeNum._validate([10, 20, 30])).to.be.true;
     expect(typeNum._validate([0, 'string'])).to.be.false;
+  });
+
+  it('DataTypes.object configuration', function() {
+    const type = DataTypes.object;
+    expect(type).to.be.an.instanceof(ObjectType);
+    expect(type._initialize()).to.be.null;
+    expect(type._validate({})).to.be.true;
+    expect(type._validate({a: 10, b: 20, c: 30})).to.be.true;
+    expect(type._validate({a: 0, b: 'string', c: true})).to.be.true;
+    expect(type._validate('string')).to.be.false;
+    expect(type._validate(10)).to.be.false;
+    expect(type._validate([])).to.be.false;
+    expect(type._validate(null)).to.be.false;
+    expect(type._validate(undefined)).to.be.false;
+
+    const typeShape = DataTypes.object.shape({
+      a: DataTypes.number,
+      b: DataTypes.string
+    }).default({a: 100, b: 'string'});
+
+    expect(typeShape).to.be.an.instanceof(ObjectType);
+    expect(typeShape._initialize()).to.eql({a: 100, b: 'string'});
+    expect(typeShape._validate({})).to.be.true;
+    expect(typeShape._validate({a: 0})).to.be.true;
+    expect(typeShape._validate({a: 0, b: ''})).to.be.true;
+    expect(typeShape._validate({a: '', b: 0})).to.be.false;
+    expect(typeShape._validate({a: 0, c: 0})).to.be.false;
+    expect(typeShape._validate({c: 0, d: ''})).to.be.false;
   });
 
 });

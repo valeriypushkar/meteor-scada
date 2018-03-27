@@ -25,8 +25,8 @@ export default class ArrayType extends SimpleType {
   }
 
   /**
-   * Configure default value for the string type.
-   * @param {array} value - default value for the array type
+   * Configure default value for the type.
+   * @param {array} value - default value for the type
    * @return array type instance
    */
   default(value) {

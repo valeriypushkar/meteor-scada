@@ -3,6 +3,7 @@ import BoolType from './types/bool'
 import NumberType from './types/number'
 import StringType from './types/string'
 import ArrayType from './types/array'
+import ObjectType from './types/object'
 import ObjectData from './object'
 
 /**
@@ -20,7 +21,7 @@ export default class DataTypes {
   static get string() {return new StringType();}
 
   /** Define object type */
-  static get object() {return null;} // TODO: implement object
+  static get object() {return new ObjectType();}
 
   /** Define array type */
   static get array() {return new ArrayType();}

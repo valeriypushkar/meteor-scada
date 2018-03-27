@@ -49,7 +49,7 @@ describe('data.object', function() {
       childBool: DataTypes.bool,
       childNumber: DataTypes.number,
       childString: DataTypes.string,
-      childObject: DataTypes.number, // FIXME: DataTypes.object
+      childObject: DataTypes.object,
       childArray: DataTypes.array,
     });
 

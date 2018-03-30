@@ -5,11 +5,16 @@ import { Meteor } from 'meteor/meteor'
  * @private
  */
 export default class SimpleType {
-  _initialize() {
-    throw new Meteor.Error('Cannot call _initialize on abstract type');
+  contructor() {
+    this._writable = false;
   }
 
-  _validate(value) {
-    throw new Meteor.Error('Cannot call _validate on abstract type');
+  rw() {
+    this._writable = true;
+    return this;
+  }
+
+  _isWritable() {
+    return this._writable;
   }
 }

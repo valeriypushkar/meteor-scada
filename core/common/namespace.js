@@ -4,5 +4,4 @@
 * @public
 */
 export default MeteorScada = {
-  _impl: {}
 }

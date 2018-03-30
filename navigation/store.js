@@ -7,7 +7,15 @@ import MeteorScada from '../core/common/namespace'
  * @private
  */
 
-var navigation = [];
+// Empty home page by default
+var navigation = [{
+  name: 'home',
+  type: 'menuitem',
+  icon: 'home',
+  title: 'Home',
+  component: null,
+  children: []
+}];
 var subscribers = new Map();
 var lastId = 1;
 

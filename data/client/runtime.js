@@ -35,10 +35,23 @@ class RuntimeDataClient extends RuntimeData {
   }
 
   set(value) {
-    // TODO: implement set
+    if (!this._type._validate(value)) {
+      console.error('Value provided for ' + this._name + ' is not valid.');
+      return;
+    }
+
+    Meteor.call('runtime.set', this._name, value);
   }
 }
 
-
 // Save client implementation of RuntimeData so common code can use it
 RuntimeData.impl = RuntimeDataClient;
+
+// Define method for setting runtime data
+Meteor.methods({
+  'runtime.set'(name, value) {
+    RuntimeData.collection.update({ name },
+      { $set: { value } }, { upsert: true }
+    );
+  }
+});

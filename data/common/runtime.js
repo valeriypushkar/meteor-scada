@@ -56,5 +56,3 @@ RuntimeData.collection = new Mongo.Collection('data.runtime');
 
 // Publication name of run-time data
 RuntimeData.publication = 'data.runtime';
-
-// TODO: Create Meteor method for updating a run-time data

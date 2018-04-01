@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor'
 import { check } from 'meteor/check'
 import { Roles } from 'meteor/alanning:roles'
+import { DDPRateLimiter } from 'meteor/ddp-rate-limiter';
 
 import RuntimeData from '../common/runtime'
 import { DataDependency } from './observer'
@@ -66,6 +67,12 @@ class RuntimeDataServer extends RuntimeData {
     );
   }
 
+  _clientSet(value) {
+    if (!this._type._isWritable()) {
+      this.set(value);
+    }
+  }
+
   _updateCache(doc) {
     if (!shallowEqual(this._value, doc.value)) {
       this._value = doc.value;
@@ -114,3 +121,17 @@ Meteor.publish(RuntimeData.publication, (names) => {
 
   return RuntimeData.collection.find( { name: {"$in": names} } );
 });
+
+// Define method for setting runtime data
+Meteor.methods({
+  'runtime.set'(name, value) {
+    const rtdata = RuntimeDataServer.map.get(doc.name);
+    if (rtdata) {
+      rtdata._clientSet(value);
+    }
+  }
+});
+
+DDPRateLimiter.addRule({
+  name: 'runtime.set',
+}, 5, 100);

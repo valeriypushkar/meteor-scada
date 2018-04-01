@@ -58,6 +58,7 @@ export default class ObjectData extends AbstractData {
    * Set object data values.
    */
   set(value) {
+    // TODO: needs to be optimized to do a single set request to DB
     for (var key in value) {
       if (this.hasOwnProperty(key) && this[key] instanceof AbstractData) {
         this[key].set(value[key]);

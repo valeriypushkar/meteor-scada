@@ -44,7 +44,6 @@ describe('data.server.runtime', function() {
     expect(rtd.get()).to.equal(22);
 
     rtd.set(33);
-    expect(rtd.get()).to.equal(33);
     const doc = RuntimeData.collection.findOne({name: 'test.name'});
     expect(doc).to.be.not.null;
     expect(doc.name).to.equal('test.name');

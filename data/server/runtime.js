@@ -20,7 +20,6 @@ class RuntimeDataServer extends RuntimeData {
     // undefined means we haven't read data from DB yet
     // null means read was done and value is null (no need of another read)
     this._value = undefined;
-    this._generation = 0;
     this._depend = new DataDependency();
 
     RuntimeDataServer.map.set(name, this);
@@ -38,7 +37,6 @@ class RuntimeDataServer extends RuntimeData {
 
       if (doc) {
         this._value = doc.value;
-        this._generation = doc.generation;
       } else if (this._value === undefined) {
         // While we were waiting result from DB the value can be updated
         // So check undefined once again
@@ -63,27 +61,22 @@ class RuntimeDataServer extends RuntimeData {
       return;
     }
 
-    this._value = value;
-    this._generation++;
-
     RuntimeData.collection.update({ name: this._name },
-      { $set: { value, generation: this._generation } }, { upsert: true }
+      { $set: { value } }, { upsert: true }
     );
-
-    this._depend.changed();
   }
 
   _updateCache(doc) {
-    if (doc.generation > this._generation || (doc.generation === this._generation
-      && !shallowEqual(this._value, doc.value))) {
+    if (!shallowEqual(this._value, doc.value)) {
       this._value = doc.value;
-      this._generation = doc.generation;
       this._depend.changed();
     }
   }
 }
 
 // Map runtime data name to the object
+// TODO: we can parse name and find appropriate data in the tree
+//       instead of double memory consumption for the name value
 RuntimeDataServer.map = new Map();
 
 // Save server implementation of RuntimeData so common code can use it

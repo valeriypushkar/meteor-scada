@@ -116,7 +116,8 @@ Meteor.publish(RuntimeData.publication, (names) => {
 
   // Make sure the user is logged in before publishing
   if (!Roles.userIsInRole( Meteor.userId(), 'guest' )) {
-    throw new Meteor.Error('User is not authorized');
+    console.error('User is not authorized');
+    return [];
   }
 
   return RuntimeData.collection.find( { name: {"$in": names} } );

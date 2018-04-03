@@ -42,7 +42,8 @@ export class DataObserver extends React.PureComponent {
     // but doesn't deletes them immediately so they can be reused
     this._computation && this._computation.stop();
 
-    this._computation = Tracker.autorun((c) => {
+    // Use Tracker.nonreactive in case we are inside a Tracker Computation.
+    this._computation = Tracker.nonreactive(() => Tracker.autorun((c) => {
       // Set subscriptions readyness to true.
       // Data variables will set it to false if they are not ready.
       Tracker.currentComputation._data_ready = true;
@@ -63,8 +64,8 @@ export class DataObserver extends React.PureComponent {
       // If it's ready, it means RuntimeData getters have read all data
       if (rtList.length > 0) {
         // Subscription will be stopped automatically when Tracker is stopped
-        const rtSub = Meteor.subscribe(RuntimeData.pubname, rtList);
-        dataReady = dataReady && rtSub.ready();
+        const rtSub = Meteor.subscribe(RuntimeData.publication, rtList);
+        dataReady = rtSub.ready() && dataReady;
       }
 
       // Check current state and modify it if required
@@ -73,7 +74,7 @@ export class DataObserver extends React.PureComponent {
       } else if (this.state.ready) {
         this.setState({ dataReady });
       }
-    });
+    }));
   }
 
   _getData(props) {

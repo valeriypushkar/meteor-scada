@@ -64,4 +64,4 @@ export function getData() {
 
 MeteorScada._data = null;
 MeteorScada.configureData = configureData;
-MeteorScada.getData = getData;
+Object.defineProperty(MeteorScada, 'data', { get: getData });

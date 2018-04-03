@@ -3,7 +3,6 @@ import { Tracker } from 'meteor/tracker'
 import React from 'react'
 
 import MeteorScada from '../../core/common/namespace'
-import LoadingPage from '../../utils/client/loading'
 import RuntimeData from '../common/runtime'
 import './runtime'
 
@@ -84,51 +83,13 @@ export class DataObserver extends React.PureComponent {
 
 /**
  * Observe data changes on client.
+ * If data is not ready renders NoDataComponent.
+ * If data is not ready and NoDataComponent is not provided renders null.
  * @param {function} dataFunc function returns props for the wrapped component
  * @param {React.Component} WrappedComponent component to be wrapped
+ * @param {React.Component} NoDataComponent component to render when data is not ready
  */
-export function withData(dataFunc, WrappedComponent) {
-  return (
-    class DataObserverImpl extends DataObserver {
-      _getData(props) {
-        return dataFunc(props);
-      }
-
-      render() {
-        return <WrappedComponent {...this.props} {...this.state} />;
-      }
-    }
-  );
-}
-
-/**
- * Observe data changes on client.
- * If data is not ready renders null.
- * @param {function} dataFunc function returns props for the wrapped component
- * @param {React.Component} WrappedComponent component to be wrapped
- */
-export function withDataOnly(dataFunc, WrappedComponent) {
-  return (
-    class DataObserverImpl extends DataObserver {
-      _getData(props) {
-        return dataFunc(props);
-      }
-
-      render() {
-        return this.state.dataReady ?
-          <WrappedComponent {...this.props} {...this.state} /> : null;
-      }
-    }
-  );
-}
-
-/**
- * Observe data changes on client.
- * If data is not ready shows progress indicator.
- * @param {function} dataFunc function returns props for the wrapped component
- * @param {React.Component} WrappedComponent component to be wrapped
- */
-export function withDataLoader(dataFunc, WrappedComponent) {
+export default function withData(dataFunc, WrappedComponent, NoDataComponent) {
   return (
     class DataObserverImpl extends DataObserver {
       _getData(props) {
@@ -138,12 +99,11 @@ export function withDataLoader(dataFunc, WrappedComponent) {
       render() {
         return this.state.dataReady ?
           <WrappedComponent {...this.props} {...this.state} /> :
-            <LoadingPage />;
+            (NoDataComponent ?
+              <NoDataComponent {...this.props} {...this.state} /> : null);
       }
     }
   );
 }
 
 MeteorScada.withData = withData;
-MeteorScada.withDataOnly = withDataOnly;
-MeteorScada.withDataLoader = withDataLoader;

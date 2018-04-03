@@ -5,8 +5,7 @@ import { mount } from 'enzyme'
 import { Tracker } from 'meteor/tracker'
 import DataTypes from '../common/datatypes'
 import RuntimeData from '../common/runtime'
-import { withData, withDataOnly, withDataLoader } from './observer'
-import LoadingPage from '../../utils/client/loading'
+import withData from './observer'
 
 describe('data.client.observer', function() {
   let saveMeteorSubscribe;
@@ -36,9 +35,8 @@ describe('data.client.observer', function() {
   });
 
 
-  function testWithoutSubscription(withMethod) {
-    const TestComponent = () => null;
-    const WrappedComponent = withMethod(() => null, TestComponent);
+  function testWithoutSubscription(TestComponent, NoDataComponent) {
+    const WrappedComponent = withData(() => null, TestComponent, NoDataComponent);
     wrapper = mount(<WrappedComponent parentProp='value' />);
 
     let props = wrapper.find(TestComponent).props();
@@ -46,9 +44,10 @@ describe('data.client.observer', function() {
     expect(props.parentProp).to.equal('value');
   }
 
-  function testWithSubscription(withMethod, TestComponent) {
+  function testWithSubscription(TestComponent, NoDataComponent) {
     const rtd = new RuntimeData.impl('test.name', DataTypes.number);
-    const WrappedComponent = withMethod(() => ({data: rtd.get()}), TestComponent);
+    const WrappedComponent = withData(() => ({data: rtd.get()}),
+      TestComponent, NoDataComponent);
     wrapper = mount(<WrappedComponent parentProp='value' />);
 
     subscriptionReady = true;
@@ -56,9 +55,10 @@ describe('data.client.observer', function() {
       { $set: { value: 33, generation: 2 } }, { upsert: true });
   }
 
-  describe('#withData', function() {
+  describe('#withData: render component if data not ready', function() {
     it('Render without data', function() {
-      testWithoutSubscription(withData);
+      const TestComponent = () => null;
+      testWithoutSubscription(TestComponent, TestComponent);
     });
 
     it('Render with data subscription', function(done) {
@@ -67,7 +67,7 @@ describe('data.client.observer', function() {
         return null;
       };
 
-      testWithSubscription(withData, TestComponent);
+      testWithSubscription(TestComponent, TestComponent);
 
       let props = wrapper.find(TestComponent).props();
       expect(props.dataReady).to.be.false;
@@ -76,9 +76,10 @@ describe('data.client.observer', function() {
     });
   });
 
-  describe('#withDataOnly', function() {
+  describe('#withData: render null if data not ready', function() {
     it('Render without data', function() {
-      testWithoutSubscription(withDataOnly);
+      const TestComponent = () => null;
+      testWithoutSubscription(TestComponent);
     });
 
     it('Render with data subscription', function(done) {
@@ -87,14 +88,16 @@ describe('data.client.observer', function() {
         return null;
       };
 
-      testWithSubscription(withDataOnly, TestComponent);
+      testWithSubscription(TestComponent);
       expect(wrapper.find(TestComponent)).to.have.length(0);
     });
   });
 
-  describe('#withDataLoader', function() {
+  describe('#withData: render NoDataComponent if data not ready', function() {
     it('Render without data', function() {
-      testWithoutSubscription(withDataLoader);
+      const TestComponent = () => null;
+      const NoDataComponent = () => null;
+      testWithoutSubscription(TestComponent, NoDataComponent);
     });
 
     it('Render with data subscription', function(done) {
@@ -102,10 +105,11 @@ describe('data.client.observer', function() {
         props.dataReady && props.data == 33 && done();
         return null;
       };
+      const NoDataComponent = () => null;
 
-      testWithSubscription(withDataLoader, TestComponent);
+      testWithSubscription(TestComponent, NoDataComponent);
       expect(wrapper.find(TestComponent)).to.have.length(0);
-      expect(wrapper.find(LoadingPage)).to.have.length(1);
+      expect(wrapper.find(NoDataComponent)).to.have.length(1);
     });
   });
 });

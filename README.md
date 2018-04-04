@@ -9,7 +9,8 @@ First, install Meteor. The instruction can be found at https://www.meteor.com/in
 Create an empty Meteor project:
 
 ```bash
-meteor create --bare <path>
+meteor create --bare <project_name>
+cd <project_name>
 ```
 
 Since meteor-scada package has not been published on Atmosphere yet, you need to clone meteor-scada repository to `packages` directory of your project. You can also keep the copy of meteor-scada somewhere else, and create a symbolic link.

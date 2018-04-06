@@ -3,10 +3,10 @@ import PropTypes from 'prop-types'
 import { withStyles } from 'material-ui/styles'
 
 /**
- * Dashboard widget.
+ * Dashboard panel.
  * @public
  */
-class Widget extends React.PureComponent {
+class Panel extends React.PureComponent {
 
   renderHeight(content) {
     const { classes, width, height } = this.props;
@@ -56,18 +56,18 @@ class Widget extends React.PureComponent {
   }
 }
 
-Widget.propTypes = {
+Panel.propTypes = {
   parentWidth: PropTypes.number, // no require to avoid warning
   width: PropTypes.number,
   height: PropTypes.number
 };
 
-const widgetPadding = 8;
+const panelPadding = 8;
 
 const styles = theme => ({
   content: {
     position: 'relative',
-    padding: widgetPadding,
+    padding: panelPadding,
     width: '100%',
     height: '100%',
   },
@@ -83,14 +83,14 @@ const styles = theme => ({
   },
   border: {
     position: 'absolute',
-    top: widgetPadding,
-    left: widgetPadding,
-    bottom: widgetPadding,
-    right: widgetPadding,
+    top: panelPadding,
+    left: panelPadding,
+    bottom: panelPadding,
+    right: panelPadding,
 
     boxShadow: theme.shadows[1],
     background: theme.palette.background.paper,
   },
 });
 
-export default withStyles(styles)(Widget);
+export default withStyles(styles)(Panel);

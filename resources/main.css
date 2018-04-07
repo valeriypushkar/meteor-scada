@@ -3,6 +3,9 @@
  But one CSS file is still required to apply global CSS hacks.
 */
 
+/* set default font */
+html { font-family: 'Roboto', sans-serif; }
+
 /* Removing input background colour for webkit autocomplete */
 @-webkit-keyframes autofill {
     to {

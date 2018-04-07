@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 /**
- * SVG canvas.
+ * SVG widget.
  * @public
  */
 export default class SvgWidget extends React.PureComponent {
